@@ -1,0 +1,5 @@
+C:/Users/46730/Documents/Unity/Hamra Grodor Mobile/.utmp/RelWithDebInfo/452a406c/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Users/46730/Documents/Unity/Hamra Grodor Mobile/.utmp/RelWithDebInfo/452a406c/armeabi-v7a/CMakeFiles/rebuild_cache.dir
+C:/Users/46730/Documents/Unity/Hamra Grodor Mobile/.utmp/RelWithDebInfo/452a406c/armeabi-v7a/FramePacing/CMakeFiles/swappywrapper.dir
+C:/Users/46730/Documents/Unity/Hamra Grodor Mobile/.utmp/RelWithDebInfo/452a406c/armeabi-v7a/FramePacing/CMakeFiles/edit_cache.dir
+C:/Users/46730/Documents/Unity/Hamra Grodor Mobile/.utmp/RelWithDebInfo/452a406c/armeabi-v7a/FramePacing/CMakeFiles/rebuild_cache.dir
