@@ -1,22 +1,18 @@
-Shader "Custom/WaterRipplesWithColorTransition"
+Shader "Custom/WaterShader"
 {
     Properties
     {
         _MainTex ("Sprite Texture", 2D) = "white" {}
+        _NormalMap ("Normal Map", 2D) = "bump" {} // Normal map for surface details
         _Speed ("Speed", Range(0, 10)) = 1
         _Frequency ("Frequency", Range(0, 10)) = 1
         _Amplitude ("Amplitude", Range(0, 1)) = 0.1
-        _Color1 ("Color 1", Color) = (0, 0.47, 0.85, 1)
-        _Color2 ("Color 2", Color) = (0.2, 0.49, 0.81, 1)
-        _Color3 ("Color 3", Color) = (0.15, 0.52, 0.93, 1)
-        _Color4 ("Color 4", Color) = (0, 0.64, 0.99, 1)
-        _Color5 ("Color 5", Color) = (0.29, 0.72, 1, 1)
-        _Blend ("Blend", Range(0, 1)) = 0
+        _Shininess ("Shininess", Range(0, 1)) = 0.5 // Shininess for specular reflection
     }
- 
+
     SubShader
     {
-        Tags {"Queue"="Overlay" }
+        Tags { "Queue" = "Overlay" }
         LOD 100
 
         Pass
@@ -41,28 +37,42 @@ Shader "Custom/WaterRipplesWithColorTransition"
             float _Speed;
             float _Frequency;
             float _Amplitude;
-            float4 _Color1;
-            float4 _Color2;
-            float4 _Color3;
-            float4 _Color4;
-            float4 _Color5;
-            float _Blend;
+            float _Shininess;
             sampler2D _MainTex;
+            sampler2D _NormalMap;
 
             v2f vert(appdata_t v)
             {
                 v2f o;
-                o.uv = v.uv + float2(sin(v.vertex.x * _Frequency + _Time.y * _Speed) * _Amplitude, 0);
+                 o.uv = v.uv + float2(0, sin(v.vertex.x * _Frequency + _Time.y * _Speed) * _Amplitude);
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 return o;
             }
 
             fixed4 frag(v2f i) : SV_Target
             {
-                float t = _Blend;
-                fixed4 color = lerp(lerp(lerp(_Color1, _Color2, t), _Color3, t), lerp(_Color4, _Color5, t), t);
                 fixed4 texColor = tex2D(_MainTex, i.uv);
-                return texColor * color;
+                float3 normalMap = UnpackNormal(tex2D(_NormalMap, i.uv));
+
+                // Apply normal mapping for surface details
+                float3 normal = normalize(normalize(i.vertex.xyz) + normalMap * _Shininess);
+
+                // Apply lighting model (e.g., Lambertian)
+                float3 lightDir = normalize(float3(1, 1, -1));
+                float diffuse = max(0, dot(normal, lightDir));
+
+                // Add specular reflection (Phong reflection model)
+                float3 viewDir = normalize(_WorldSpaceCameraPos - i.vertex.xyz);
+                float3 reflectDir = reflect(-lightDir, normal);
+                float specular = pow(max(0, dot(viewDir, reflectDir)), 16); // Shininess factor
+
+                // Water color with diffuse and specular components
+                fixed3 waterColor = texColor.rgb * (0.5 + 0.5 * diffuse) + float3(0.5, 0.7, 1) * specular;
+
+                // Apply alpha from the texture
+                float alpha = texColor.a;
+
+                return fixed4(waterColor, alpha);
             }
             ENDCG
         }

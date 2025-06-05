@@ -1,0 +1,486 @@
+fileFormatVersion: 2
+guid: 7d2dde7af2578c2448429599da3f483d
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -4928347837839570810
+    second: bg_logo_loading_screen_0
+  - first:
+      213: -6379543059321031593
+    second: bg_logo_loading_screen_1
+  - first:
+      213: 6958314483545213726
+    second: bg_logo_loading_screen_2
+  - first:
+      213: 5018434552320680233
+    second: bg_logo_loading_screen_3
+  - first:
+      213: -7751621558908860126
+    second: bg_logo_loading_screen_4
+  - first:
+      213: 7571321091933369723
+    second: bg_logo_loading_screen_5
+  - first:
+      213: 1133428775984204626
+    second: bg_logo_loading_screen_6
+  - first:
+      213: -4471074702774236471
+    second: bg_logo_loading_screen_7
+  - first:
+      213: 3223044826130079642
+    second: bg_logo_loading_screen_8
+  - first:
+      213: 3295224739541644208
+    second: bg_logo_loading_screen_9
+  - first:
+      213: -4486928656265798746
+    second: bg_logo_loading_screen_10
+  - first:
+      213: -6908628882652536220
+    second: bg_logo_loading_screen_11
+  - first:
+      213: -2793993626865139228
+    second: bg_logo_loading_screen_12
+  - first:
+      213: 7614094798812611080
+    second: bg_logo_loading_screen_13
+  externalObjects: {}
+  serializedVersion: 12
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 2
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 2
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: iPhone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: bg_logo_loading_screen_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 14
+        width: 51
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6880204c0cdfa9bb0800000000000000
+      internalID: -4928347837839570810
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bg_logo_loading_screen_1
+      rect:
+        serializedVersion: 2
+        x: 54
+        y: 14
+        width: 70
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7547cd7436f4777a0800000000000000
+      internalID: -6379543059321031593
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bg_logo_loading_screen_2
+      rect:
+        serializedVersion: 2
+        x: 124
+        y: 14
+        width: 80
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e1b0b23f726e09060800000000000000
+      internalID: 6958314483545213726
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bg_logo_loading_screen_3
+      rect:
+        serializedVersion: 2
+        x: 208
+        y: 14
+        width: 53
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 921ee93f2af05a540800000000000000
+      internalID: 5018434552320680233
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bg_logo_loading_screen_4
+      rect:
+        serializedVersion: 2
+        x: 265
+        y: 10
+        width: 33
+        height: 84
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2294af31345bc6490800000000000000
+      internalID: -7751621558908860126
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bg_logo_loading_screen_5
+      rect:
+        serializedVersion: 2
+        x: 301
+        y: 14
+        width: 62
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b757c152b6cb21960800000000000000
+      internalID: 7571321091933369723
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bg_logo_loading_screen_6
+      rect:
+        serializedVersion: 2
+        x: 368
+        y: 14
+        width: 75
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 25b8eb2777fbabf00800000000000000
+      internalID: 1133428775984204626
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bg_logo_loading_screen_7
+      rect:
+        serializedVersion: 2
+        x: 492
+        y: 16
+        width: 87
+        height: 88
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9ca08e02f3d83f1c0800000000000000
+      internalID: -4471074702774236471
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bg_logo_loading_screen_8
+      rect:
+        serializedVersion: 2
+        x: 511
+        y: 0
+        width: 83
+        height: 86
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a9fd4a4613e8abc20800000000000000
+      internalID: 3223044826130079642
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bg_logo_loading_screen_9
+      rect:
+        serializedVersion: 2
+        x: 649
+        y: 11
+        width: 54
+        height: 82
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0b37577117dfabd20800000000000000
+      internalID: 3295224739541644208
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bg_logo_loading_screen_10
+      rect:
+        serializedVersion: 2
+        x: 708
+        y: 12
+        width: 72
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6ab91cee82a3bb1c0800000000000000
+      internalID: -4486928656265798746
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bg_logo_loading_screen_11
+      rect:
+        serializedVersion: 2
+        x: 779
+        y: 12
+        width: 83
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 462ed7c72ae9f10a0800000000000000
+      internalID: -6908628882652536220
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bg_logo_loading_screen_12
+      rect:
+        serializedVersion: 2
+        x: 866
+        y: 12
+        width: 49
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4e18ffd799db939d0800000000000000
+      internalID: -2793993626865139228
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bg_logo_loading_screen_13
+      rect:
+        serializedVersion: 2
+        x: 918
+        y: 11
+        width: 56
+        height: 82
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8020069d0e2baa960800000000000000
+      internalID: 7614094798812611080
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      bg_logo_loading_screen_0: -4928347837839570810
+      bg_logo_loading_screen_1: -6379543059321031593
+      bg_logo_loading_screen_10: -4486928656265798746
+      bg_logo_loading_screen_11: -6908628882652536220
+      bg_logo_loading_screen_12: -2793993626865139228
+      bg_logo_loading_screen_13: 7614094798812611080
+      bg_logo_loading_screen_2: 6958314483545213726
+      bg_logo_loading_screen_3: 5018434552320680233
+      bg_logo_loading_screen_4: -7751621558908860126
+      bg_logo_loading_screen_5: 7571321091933369723
+      bg_logo_loading_screen_6: 1133428775984204626
+      bg_logo_loading_screen_7: -4471074702774236471
+      bg_logo_loading_screen_8: 3223044826130079642
+      bg_logo_loading_screen_9: 3295224739541644208
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

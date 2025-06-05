@@ -1,27 +1,94 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
+using System.Threading;
 
 public class GameLoopManager : MonoBehaviour
 {
     private GameState currentState;
-    private GameManager gameManager;
-    private InputManager inputManager;
-    private UIManager uiManager;
+ 
+    [SerializeField] private GameManager gameManager;
+    [SerializeField] private InputManager inputManager;
+    [SerializeField] private UIManager uiManager;
+    public static GameProgress progress;
+   public static GameLoopManager instance;
+    public static Action<GameState> GameStates;
+    public GameObject developerMenu;
+    private void Awake()
+    {
+        if (instance == null)
+        { instance = this; }
+        else if (instance != this)
+        { Destroy(gameObject); }
 
+        Application.targetFrameRate = 60;
+        initSave();
+    }
     private void Start()
     {
+       
+
+        GameStates += ChangeState;
         // Initialize components
-        gameManager = new GameManager();
-        inputManager = new InputManager();
-        uiManager = new UIManager();
+       //gameManager = new GameManager();
+       //inputManager = new InputManager();
+       //uiManager = new UIManager();
 
         // Set initial game state
-        ChangeState(GameState.MainMenu);
+        ChangeState(GameState.LoadingScreen);
+    }
+
+    private void initSave()
+    {
+        if (ProgressManager.LoadGameProgress("savedProgress")==null)
+        {
+            progress = new GameProgress();
+            progress._timeLimitIndex = 0;
+            progress.Highscore30 = 0;
+            progress.Highscore60 = 0;
+            progress.Highscore90 = 0;
+            progress.Highscore120 = 0;
+            progress._score = 0;
+            progress.audio = true;
+            progress.music = true;
+            progress.speed = 640f;
+           progress.SpeedDecreaseValue = 200f;
+            progress.SpeedBoostValue = 200f;
+            progress.NightModeLength = 5f;
+
+            ProgressManager.SaveGameProgress("savedProgress", progress);
+        }
+        else
+        {
+            progress = ProgressManager.LoadGameProgress("savedProgress");
+        }
+      
+    }
+
+    private void OnDestroy()
+    {
+        GameStates -= ChangeState;
+      
     }
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            ProgressManager.SaveGameProgress("savedProgress", progress);
+            developerMenu.SetActive(!developerMenu.activeSelf);
+        }
+
+        if(Input.GetKeyDown(KeyCode.P))
+        {
+            ProgressManager.DeleteGameProgress();
+        }
+        if(Input.GetKeyDown(KeyCode.R))
+        {
+            Application.Quit();
+        }
         // Check for state transitions
         HandleStateTransitions();
 
@@ -37,121 +104,33 @@ public class GameLoopManager : MonoBehaviour
 
     private void HandleStateTransitions()
     {
+
         // Implement state transitions logic here
         // For example, when the player clicks "Play" in the main menu, transition to Playing state.
     }
 
-    private void ChangeState(GameState newState)
+    public void ChangeState(GameState newState)
     {
         // Handle exiting the current state (e.g., clean up)
         // Transition to the new state
         currentState = newState;
+        
         // Handle entering the new state (e.g., setup)
     }
 }
 
-public class UIManager:MonoBehaviour
-{
-    public void UpdateUI(GameState currentState)
-    {
 
 
-    }
-}
-
-public class InputManager:MonoBehaviour
-{
-    // Singleton instance for the InputManager
-    private static InputManager instance;
-
-    // Ensure only one instance of InputManager exists
-    public static InputManager Instance
-    {
-        get
-        {
-            if (instance == null)
-            {
-                
-                instance = FindObjectOfType<InputManager>();
-                if (instance == null)
-                {
-                    GameObject inputManagerObject = new GameObject("InputManager");
-                    instance = inputManagerObject.AddComponent<InputManager>();
-                }
-            }
-            return instance;
-        }
-    }
-
-    // Define touch-related variables
-    private bool isTouching = false;
-    private Vector2 touchStartPosition;
-
-    private void Update()
-    {
-        // Handle mobile touch input
-        HandleTouchInput();
-    }
-
-    private void HandleTouchInput()
-    {
-        if (Input.touchCount > 0)
-        {
-            Touch touch = Input.GetTouch(0); // Get the first touch
-
-            switch (touch.phase)
-            {
-                case TouchPhase.Began:
-                    isTouching = true;
-                    touchStartPosition = touch.position;
-                    break;
-
-                case TouchPhase.Moved:
-                    // Handle touch drag/move
-                    Vector2 touchDelta = touch.position - touchStartPosition;
-                    // Implement your logic for touch drag here
-                    break;
-
-                case TouchPhase.Ended:
-                    isTouching = false;
-                    // Handle touch release
-                    // Implement your logic for touch release here
-                    break;
-            }
-        }
-    }
-
-    // Public method to check if the screen is currently being touched
-    public bool IsTouching()
-    {
-        return isTouching;
-    }
-
-    // Public method to get the touch start position
-    public Vector2 GetTouchStartPosition()
-    {
-        return touchStartPosition;
-    }
-    public void HandleInput(GameState currentState)
-    {
 
 
-    }
-}
 
-public class GameManager:MonoBehaviour
-{
-  public void UpdateGame(GameState currentState)
-    {
-
-    }
-}
 
 public enum GameState
 {
+    LoadingScreen,
     MainMenu,
     Start,
     Playing,
-    Finish,
+    GameOver,
     Paused
 }

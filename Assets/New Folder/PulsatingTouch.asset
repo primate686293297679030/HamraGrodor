@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5bf0644509dc514eb2739ff943e697a, type: 3}
+  m_Name: PulsatingTouch
+  m_EditorClassIdentifier: 
+  sprite: {fileID: -782741635291442411, guid: 7105ad339d0b48c4cae367d41979a533, type: 3}
+  isActive: 0
+  beenUsed: 1
+  uniqueId: 3
+  _time: 0.32999593

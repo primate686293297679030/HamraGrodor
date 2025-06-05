@@ -3,107 +3,174 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using DG.Tweening;
+using TMPro;
+using System.Collections.Generic;
+using System;
+
 public class LevelManager : MonoBehaviour
 {
-    public static LevelManager instance;
-    [SerializeField] private GameObject _loaderCanvas;
-    [SerializeField] private Image _progressBar;
+  
+
+    [SerializeField] private Camera _mainCamera;    
+    [SerializeField] private Slider _progressBarObj;    
+    //  [SerializeField] private Image _progressBar;
+
+    [Header("Loading Screen")]
+
+    [SerializeField] private RectTransform _hamra;
+    [SerializeField] private RectTransform _grodor;
+    [SerializeField] private RectTransform _bambinoGame;
+    [SerializeField] private GameObject _Menu;
+    [SerializeField] private Image img_hamra;
+    [SerializeField] private Image img_grodor;
+    [SerializeField] private Image _bambinoObject;
+    [SerializeField] private GameObject _sunrays;
+    [SerializeField] private Image _fog;
+    [SerializeField] private GameObject _waterShadow2;
+    [SerializeField] private GameObject _waterShadow1;
+    [SerializeField] private GameObject _waterDarkSpots;
+
+    [Header("Story Screen")]
+    [SerializeField] private TextMeshProUGUI _text;
+    [SerializeField] private Image _panelFilter;
     [SerializeField] private Image _loadingScreenLogo;
-    [SerializeField] private GameObject _Logo;
+    [SerializeField] private Image _loadingBarBackground;
+    [SerializeField] private Image _loadingBarFill;
+    [SerializeField] private Button _continueButton;
+    [SerializeField] private TextMeshProUGUI _continueButtonText;
+
+
+    [Header("Menu Screen")]
+
+    [SerializeField] private Image _StartGame;
+    [SerializeField] private Image _LeaderBoard;
+    [SerializeField] private Image _About;
+    [SerializeField] private Image _Settings;
+    [SerializeField] private Image _logoMenu;
+
+    [Header("Game Board")]
+
+   // [SerializeField] private Image BackButton;
+    [SerializeField] GameObject GameBoard;
+    [SerializeField] RectTransform rectTransformSunRay;
+
+
     private float _target;
-    bool initDelay = true;
+    private bool initDelay = true;
     private float time;
-    Task g;
+    private Task g;
+    private float targetOrthographicSize;
+    private Vector3 _targetPosition1 = new Vector3(0, 0, 0);
+    private Vector3 _targetPosition2 = new Vector3(73, -700f, 0);
+
+    public List<TextMeshProUGUI> menuTexts;
+    public Action NextAnimationSequence;
+    public static LevelManager instance;
+    public GameObject blockTouchPanel;
 
     private void Awake()
     {
+        _hamra.transform.localScale=new Vector3(0,0,1);
+        _grodor.transform.localScale=new Vector3(0,0,1);
+        _bambinoGame.localScale=new Vector3(0,0,1);
+        _continueButton.gameObject.SetActive(false);
+
         if (instance == null)
         {
             instance = this;
-            DontDestroyOnLoad(gameObject);
+          //  DontDestroyOnLoad(gameObject);
         }
         else
         {
-            Destroy(gameObject);
+            Destroy(this);
         }
-        
+    
     }
 
-    // Start is called before the first frame update
     async void Start()
-    {   //_Logo.transform.DOScale(0.5f, 2).SetEase(Ease.OutQuad);
-        
-       // _loadingScreenLogo.DOFade(0, 2);
-      await Task.Delay(1000);
-        try
-        {
-           // await Awaitable.WaitForSecondsAsync(3, destroyCancellationToken);
-            await LoadLevel("MainMenuScene");
-
-
-        }
-        catch
-        {
-        Debug.Log("Destroy token was cancelled.");
-        }
-        // SceneManager.LoadScene(1);
-    }
-    public async Task LoadLevel(string sceneName)
     {
-        _target = 0;
-        _progressBar.fillAmount = 0;
-        var scene = SceneManager.LoadSceneAsync(sceneName);
-        scene.allowSceneActivation = false;
-        _loaderCanvas.SetActive(true);
-        do {  _target = scene.progress;  } while (scene.progress < 0.9f);
-
-        while(!destroyCancellationToken.IsCancellationRequested)
-        {
-            await Awaitable.WaitForSecondsAsync(9, destroyCancellationToken);
-            //scene.allowSceneActivation = true;
-            //_loaderCanvas.SetActive(false);
-          
-          
-        }
-
-      
+        await ProgressbarAnimSpeed();       
     }
+  
 
-    private async Task ProgressbarAnimSpeed() {    
-    
+    private async Task ProgressbarAnimSpeed() {
+
+        _hamra.transform.DOScale(new Vector3(0.5f, 0.5f, 1), 1.33f).SetEase(Ease.OutBack);
+        _grodor.transform.DOScale(new Vector3(0.5f, 0.5f, 1), 1.33f).SetEase(Ease.OutBack);
+        _bambinoGame.transform.DOScale(new Vector3(0.5f, 0.5f, 1), 1.33f).SetEase(Ease.OutBack);
+        await DOVirtual.Float(0f,3f, 5f, v => SetFillAmount(v)).AsyncWaitForCompletion();
+
+        _loadingBarBackground.DOFade(0, 1).SetEase(Ease.OutSine);
+        _fog.DOFade(0, 1).SetEase(Ease.OutSine);
+        _loadingBarFill.DOFade(0, 1).SetEase(Ease.OutSine);
+        _bambinoObject.DOFade(0, 1).SetEase(Ease.OutSine);
+
+        _sunrays.gameObject.GetComponent<WaveAnimation>().enabled=false;
        
-        _progressBar.fillAmount = Mathf.Lerp(_progressBar.fillAmount, _progressBar.fillAmount + 3 * 0.01f, Time.deltaTime * 2);
-    }
-    private async Task delay()
-    {
-        Task.Delay(1000);
-        initDelay = false;
-    }
-    // Update is called once per frame
-    async void Update()
-    {
-        time += Time.deltaTime;
-        if (initDelay == true)
-        {
-            delay();
-        }
-        else
-        {
-            ProgressbarAnimSpeed();
-        }
+        _waterShadow1.transform.DOScale(new Vector3(1, 1, 1), 1);
+        _waterShadow1.gameObject.GetComponent<Image>().DOFade(0, 1);
+        _sunrays.transform.DOScale(new Vector3(2.5f, 2, 1), 1f);
+        _panelFilter.DOFade(0.43f, 1).SetEase(Ease.InSine);
 
-        
+        _waterShadow2.SetActive(false);
 
+        _hamra.DOLocalMove(new Vector3(0, 313.4f, 0), 2f).SetEase(Ease.OutBack);
+        _grodor.DOLocalMove(new Vector3(205f, 220f, 0), 2f).SetEase(Ease.OutBack);
     
-      //  var b=  ProgressbarAnimSpeed();
-      
+        _hamra.transform.DOScale(new Vector3(0.4f, 0.4f, 1), 1f).SetEase(Ease.OutQuad);
+        _grodor.transform.DOScale(new Vector3(0.33f, 0.33f, 1), 1f).SetEase(Ease.OutQuad);
+        _text.DOColor(new Color(1, 1, 1, 1f), 3f).SetEase(Ease.InQuint);
+        rectTransformSunRay.DOAnchorPos(_targetPosition2, 1f).SetEase(Ease.InOutSine);
+  
+       
+     
+        await GameBoard.transform.DOScale(new Vector3(1f, 1f, 1f), 2f).SetEase(Ease.OutSine).AsyncWaitForCompletion();
+        
+        _continueButton.gameObject.SetActive(true);
+        _continueButtonText.DOColor(new Color(1, 1, 1, 1f), 1f).SetEase(Ease.InOutSine);
+        _continueButton.GetComponent<Image>().DOFade(1, 1f).SetEase(Ease.InOutSine).OnComplete(() => { _continueButton.enabled = true; });
+        _sunrays.gameObject.GetComponent<WaveAnimation>().enabled = enabled;
    
-        if (time == 3.0f)
-        {
-            
-           // gameObject.SetActive(false);
-
-        }
 
     }
+    async void SetFillAmount(float v)
+    {
+       _progressBarObj.value = v;       
+    }
+    public async void OnContinue()
+    {
+        _text.DOColor(new Color(1, 1, 1, 0f), 0.5f).SetEase(Ease.InSine);
+        _continueButton.GetComponent<Image>().DOFade(0, 0.5f).SetEase(Ease.InSine);
+        _continueButtonText.DOColor(new Color(1, 1, 1, 0f), 0.5f).SetEase(Ease.InSine);
+        img_hamra.DOFade(0, 0.5f).SetEase(Ease.InSine);
+        img_grodor.DOFade(0,0.5f).SetEase(Ease.InSine);      
+        await img_hamra.DOFade(0, 0.5f).AsyncWaitForCompletion();
+        LoadMenu();
+
+    }
+
+    public async void LoadMenu()
+    {
+        _Menu.SetActive(true);
+        blockTouchPanel.SetActive(true);
+        _panelFilter.DOFade(0.33f, 0.9f).SetEase(Ease.InSine);
+        
+        _logoMenu.DOFade(1, 1f).SetEase(Ease.InCubic);
+        _StartGame.DOFade(1, 1f).SetEase(Ease.InCubic);
+        menuTexts[0].DOColor(new Color(1, 1, 1, 1f), 1f).SetEase(Ease.InCubic);
+        _LeaderBoard.DOFade(1, 1f).SetEase(Ease.InCubic);
+        menuTexts[1].DOColor(new Color(1, 1, 1, 1f), 1f).SetEase(Ease.InCubic);
+        menuTexts[2].DOColor(new Color(1, 1, 1, 1f), 1f).SetEase(Ease.InCubic);
+        _About.DOFade(1, 1f).SetEase(Ease.InCubic);
+        menuTexts[3].DOColor(new Color(1, 1, 1, 1f), 1f).SetEase(Ease.InCubic);
+        _Settings.DOFade(1, 1f).SetEase(Ease.InCubic);
+        menuTexts[4].DOColor(new Color(1, 1, 1, 1f), 1f).SetEase(Ease.InCubic).OnComplete(() => { blockTouchPanel.SetActive(false); });
+      
+       // await BackButton.DOFade(1, 0.5f).SetEase(Ease.InCubic).AsyncWaitForCompletion();
+
+        GameLoopManager.GameStates?.Invoke(GameState.MainMenu);
+
+       
+    }
+
 }

@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - postCam
   layers:
   - Default
   - TransparentFX
@@ -11,7 +12,7 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - post
   - 
   - 
   - 
@@ -41,6 +42,36 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: background
+    uniqueID: 246375743
+    locked: 0
+  - name: sky
+    uniqueID: 3098007683
+    locked: 0
+  - name: Water
+    uniqueID: 1780014833
+    locked: 0
+  - name: Cloud
+    uniqueID: 3272298939
+    locked: 0
+  - name: Ground
+    uniqueID: 3204208015
+    locked: 0
+  - name: Object
+    uniqueID: 2510217743
+    locked: 0
+  - name: Game
+    uniqueID: 3492083853
+    locked: 0
   - name: UI
     uniqueID: 502508353
+    locked: 0
+  - name: ui2
+    uniqueID: 3887184549
+    locked: 0
+  - name: ui3
+    uniqueID: 2740055823
+    locked: 0
+  - name: Post
+    uniqueID: 2486532417
     locked: 0
