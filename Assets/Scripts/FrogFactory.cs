@@ -7,7 +7,7 @@ using DG.Tweening;
 
 public class frogObject : MonoBehaviour
 {
-    public bool isActive;
+    public bool isActive=false;
     public RectTransform rectTransform;
     public float speed;
     public FrogScript frogScript;
@@ -29,6 +29,7 @@ public class frogObject : MonoBehaviour
 }
 public class FrogFactory : MonoBehaviour
 {
+    
     [SerializeField] private GameObject _frogPrefab; // Reference to the prefab you want to spawn
     [SerializeField] private RectTransform _parentTransform; // The RectTransform of borderCollider.gameObject is used as parent for the _frogPrefab
 
@@ -84,7 +85,7 @@ public class FrogFactory : MonoBehaviour
     }
     public List<frogObject> InstansiateFrogs(int amount)
     { 
-        for(int i=1;i<=amount;i++)
+        for(int i=0;i<amount;i++)
         {           
             if (_parentTransform.gameObject != null)
             {
@@ -98,8 +99,9 @@ public class FrogFactory : MonoBehaviour
                      
                         GameObject frog = Instantiate(_frogPrefab);
                     
-                        frog.transform.parent = _parentTransform;
-
+                       // frog.transform.parent = _parentTransform;
+                         //SetParent = _parentTransform;
+                         frog.transform.SetParent(_parentTransform, false);
                       
 
                        
@@ -109,12 +111,15 @@ public class FrogFactory : MonoBehaviour
                             rectTransform.anchoredPosition = randomPosition;
                            rectTransform.localScale=new Vector3(2f,2f,1);
                         frogObject frogObject = new frogObject();
+                    //    GameObject newFrogGO = new GameObject("Frog");
+                      //  frogObject frogObject = newFrogGO.AddComponent<frogObject>();
                         
                         frogObject.rectTransform = rectTransform;
                         frogObject.isActive = false;
-                        frogObject.speed = 47500;
+                        frogObject.speed = 1.5f;
                         frogObject.frogRectTransform= frog.transform.GetChild(0).GetComponent<RectTransform>();
                         frogObject.frogScript = frog.GetComponentInChildren<FrogScript>();
+                        frogObject.frogScript.frogListIndex = i; // Assign the index based on the loop iteration
                             frog.name = "frogPrefabInstance";
                             frogObjects.Add(frogObject);
                         

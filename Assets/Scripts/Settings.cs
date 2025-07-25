@@ -13,15 +13,18 @@ public class Settings : MonoBehaviour
     [SerializeField] private Sprite _enableAudio;
     [SerializeField] private Sprite _disableMusic;
     [SerializeField] private Sprite _enableMusic;
- 
+
+    [SerializeField] private Image _MusicButtonPause;
+    [SerializeField] private Image _SoundButtonPause;
+
     [SerializeField] private Image _musicButton;
     [SerializeField] private Image _soundButton;
 
     [SerializeField] private Image increaseButton;
     [SerializeField] private Image decreaseButton;
     private 
-    bool isMusicDisabled = false;
-    bool isAudioDisabled = false;
+    bool isMusic = false;
+    bool isAudio = false;
 
     public static Action<int> OnTimeSelectorIndex;
   
@@ -58,23 +61,28 @@ public class Settings : MonoBehaviour
         _highScoreText.text = _highScore[_timeSelectorIndex].ToString();
         _gameTime.sprite = lGameTime[_timeSelectorIndex];
 
-        isMusicDisabled= GameLoopManager.progress.music;
-        isAudioDisabled = GameLoopManager.progress.audio;
-        if (isMusicDisabled)
-        {
-            _musicButton.sprite = _disableMusic;
-        }
-        else
-        {
+        isMusic= GameLoopManager.progress.music;
+        isAudio = GameLoopManager.progress.audio;
+        if (isMusic)
+        { 
+            
+            _MusicButtonPause.sprite = _enableMusic;
             _musicButton.sprite = _enableMusic;
         }
-        if (isAudioDisabled)
+        else
         {
-            _soundButton.sprite = _disableAudio;
+            _MusicButtonPause.sprite = _disableMusic;
+            _musicButton.sprite = _disableMusic;
+        }
+        if (isAudio)
+        {
+            _SoundButtonPause.sprite = _enableAudio;
+            _soundButton.sprite = _enableAudio;
         }
         else
         {
-            _soundButton.sprite = _enableAudio;
+            _SoundButtonPause.sprite = _disableAudio;
+            _soundButton.sprite = _disableAudio;
         }
     }
     public void OnBackButton()
@@ -85,29 +93,34 @@ public class Settings : MonoBehaviour
     }
     public void OnDisableMusic()
     {
-        isMusicDisabled = !isMusicDisabled;
-        GameLoopManager.progress.music = isMusicDisabled;
-        if (isMusicDisabled)
+        isMusic = !isMusic;
+        GameLoopManager.progress.music = isMusic;
+        if (isMusic)
         {
-            _musicButton.sprite = _disableMusic;
+            _MusicButtonPause.sprite = _enableMusic;
+            _musicButton.sprite = _enableMusic;
         }
         else
         {
-            _musicButton.sprite = _enableMusic;
+            _MusicButtonPause.sprite = _disableMusic;
+            _musicButton.sprite = _disableMusic;
+
         }
     }
     public void OnDisableAudio()
     {
 
-        isAudioDisabled = !isAudioDisabled;
-        GameLoopManager.progress.audio = isAudioDisabled;
-        if (isAudioDisabled)
+        isAudio = !isAudio;
+        GameLoopManager.progress.audio = isAudio;
+        if (isAudio)
         {
-            _soundButton.sprite = _disableAudio;
+            _SoundButtonPause.sprite = _enableAudio;
+            _soundButton.sprite = _enableAudio;
         }
         else
         {
-            _soundButton.sprite = _enableAudio;
+            _SoundButtonPause.sprite = _disableAudio;
+            _soundButton.sprite = _disableAudio;
         }
     }
 
@@ -194,24 +207,52 @@ public class Settings : MonoBehaviour
 
     public void OnSettingsLoad()
     {
-        switch (GameLoopManager.progress._timeLimitIndex)
+
+        isMusic = GameLoopManager.progress.music;
+        isAudio = GameLoopManager.progress.audio;
+        if (isMusic)
+        {
+            _MusicButtonPause.sprite = _enableMusic;
+            _musicButton.sprite = _enableMusic;
+        }
+        else
+        {
+            _MusicButtonPause.sprite = _disableMusic;
+            _musicButton.sprite = _disableMusic;
+        }
+        if (isAudio)
+        {
+            _SoundButtonPause.sprite = _enableAudio;
+            _soundButton.sprite = _enableAudio;
+        }
+        else
+        {
+            _SoundButtonPause.sprite = _disableAudio;
+            _soundButton.sprite = _disableAudio;
+        }
+
+        switch (_timeSelectorIndex)
         {
             case 0:
-                _highScore[GameLoopManager.progress._timeLimitIndex] = GameLoopManager.progress.Highscore30;
+                _highScore[_timeSelectorIndex] = GameLoopManager.progress.Highscore30;
                 break;
             case 1:
-                _highScore[GameLoopManager.progress._timeLimitIndex] = GameLoopManager.progress.Highscore60;
+                _highScore[_timeSelectorIndex] = GameLoopManager.progress.Highscore60;
                 break;
             case 2:
-                _highScore[GameLoopManager.progress._timeLimitIndex] = GameLoopManager.progress.Highscore90;
+                _highScore[_timeSelectorIndex] = GameLoopManager.progress.Highscore90;
                 break;
             case 3:
-                _highScore[GameLoopManager.progress._timeLimitIndex] = GameLoopManager.progress.Highscore120;
+                _highScore[_timeSelectorIndex] = GameLoopManager.progress.Highscore120;
                 break;
         }
 
-        _highScoreText.text = _highScore[GameLoopManager.progress._timeLimitIndex].ToString();
-        _gameTime.sprite = lGameTime[GameLoopManager.progress._timeLimitIndex];
+
+
+        _highScoreText.text = _highScore[_timeSelectorIndex].ToString();
+        _gameTime.sprite = lGameTime[_timeSelectorIndex];
+
+
 
     }
  

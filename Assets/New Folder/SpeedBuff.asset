@@ -14,6 +14,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sprite: {fileID: 1631790434440380611, guid: aa8a2b7c19d8374448632add2a40a2d4, type: 3}
   isActive: 0
-  beenUsed: 1
+  beenUsed: 0
   uniqueId: 0
   _time: -0.000003826618
+  SpeedBoostValue: 200
+  TimeBoostValue: 0
+  DoubleScoreValue: 0
+  PulsatingTouchValue: 0
+  NightModeValue: 0
+  TimeDecreaseValue: 0
+  SpeedDecreaseValue: 200
+  FrogShieldValue: 0
+  SpeedBoostLength: 0
+  TimeBoostLength: 0
+  DoubleScoreLength: 0
+  PulsatingTouchLength: 0
+  NightModeLength: 5
+  TimeDecreaseLength: 0
+  SpeedDecreaseLength: 0
+  FrogShieldLength: 0

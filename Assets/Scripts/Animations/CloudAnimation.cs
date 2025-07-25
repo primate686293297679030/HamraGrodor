@@ -4,7 +4,6 @@ using UnityEngine;
 using DG.Tweening;
 using UnityEngine.Scripting.APIUpdating;
 using System.Threading.Tasks;
-using UnityEngine;
 using UnityEngine.UIElements;
 using System;
 
@@ -28,7 +27,7 @@ public class CloudAnimation : MonoBehaviour
         }
         catch (OperationCanceledException)
         {
-            Debug.Log("Destroy Token was cancelled");
+           
         }
     }
 
@@ -42,7 +41,7 @@ public class CloudAnimation : MonoBehaviour
                  await Awaitable.WaitForSecondsAsync(delay,destroyCancellationToken);
             await rectTransform.DOAnchorPos(targetPosition, duration).SetEase(Ease.Linear).SetLoops(-1, LoopType.Restart).AsyncWaitForCompletion();
             duration= UnityEngine.Random.Range(100, 250);
-            Debug.Log("duration: " + duration);
+            
         }
     }
 }

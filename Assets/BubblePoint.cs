@@ -15,11 +15,6 @@ public class BubbleSpawner : MonoBehaviour
     // Delay before destroying the bubble after it's created
 
     bool isSpawning = false; // Flag to check if the bubbles are spawning
-    private void Start()
-    {
-        // Start spawning bubbles
-     
-    }
 
     private void SpawnBubble()
     {

@@ -12,6 +12,7 @@ using Unity.Burst;
 using UnityEngine.UI;
 using UnityEditor;
 using UnityEngine.EventSystems;
+using Unity.VisualScripting.Antlr3.Runtime;
 
 public class GameManager : MonoBehaviour
 {
@@ -39,11 +40,11 @@ public class GameManager : MonoBehaviour
     
     List<frogObject> frogs;
   
-    float timeValue=0f;
+
     [SerializeField] private RectTransform minimumDistancePoint;
     float distance;
     float totalDistance=545;
-    float meterDistance=6;
+ 
     float adjustedDistance;
     List<RectTransform> oldPosY = new List<RectTransform>();
     List<RectTransform> frogPositions = new List<RectTransform>();
@@ -53,8 +54,7 @@ public class GameManager : MonoBehaviour
     public int frogCount = 10;
     public float timeBetweenFrogSpawns = 0.5f;
 
-    private bool isGameRunning = true;
-    public bool spawnFrogs;
+    GameState _gameState;
 
     [Header ("Game Settings")]
     public bool scaleByDistance;
@@ -63,14 +63,13 @@ public class GameManager : MonoBehaviour
 
     public static Action BuffFrogClicked;
 
-
     [Header("Frog Animation Parameters")]
     public float jumpSpeed=1f;
     public float jumpAmount = 1f;
     public float lilyPadSpeed=1f;
 
     //pixels per second
-    public float _frogspeed = 640f;    // in km/h
+    public float _frogspeed = 640f;    
 
     public float Frogspeed
     {
@@ -79,39 +78,32 @@ public class GameManager : MonoBehaviour
     }
     public int scoreAmount=1;
     public float frogSpawnFrequency=1;
+    private CancellationTokenSource destroyCancellationTokenGM;
 
     private void Reset()
     {
         
     }
+    
     private void Awake()
     {
         if (instance == null)
         {
             instance = this;
+            // Initialize the cancellation token source
+            destroyCancellationTokenGM = new CancellationTokenSource();
         }
         else
         {
             Destroy(this);
         }
-    }
-    private void OnDestroy()
-    {
-        Settings.OnTimeSelectorIndex -= OnTimeSelectorIndex;
-        GameLoopManager.GameStates -= OnGameState;
-        BuffFrogClicked -= OnBuffFrogClicked;
-        OnDoubleScore -= DoubleScore;
-        DOTween.KillAll();
-
-    }
-    private void Start()
-    {
         Settings.OnTimeSelectorIndex += OnTimeSelectorIndex;
         GameLoopManager.GameStates += OnGameState;
         BuffFrogClicked += OnBuffFrogClicked;
         OnDoubleScore += DoubleScore;
 
         frogs = FrogFactory.instance.InstansiateFrogs(frogCount);
+        List<frogObject> frogsCpyOriginal = new List<frogObject>(frogs);
 
         for (int i = 0; i < frogs.Count; i++)
             frogPositions.Add(frogs[i].rectTransform);
@@ -119,86 +111,107 @@ public class GameManager : MonoBehaviour
         foreach (var frog in frogs)
             if (scaleByDistance)
             {
-
                 distance = Mathf.Abs(frog.rectTransform.anchoredPosition.y);
                 adjustedDistance = (distance / totalDistance);
                 frog.rectTransform.localScale = new Vector3(frog.rectTransform.localScale.x * adjustedDistance, frog.rectTransform.localScale.y * adjustedDistance, frog.rectTransform.localScale.z);
-
             }
+
         frogs.Sort((a, b) => b.rectTransform.anchoredPosition.y.CompareTo(a.rectTransform.anchoredPosition.y));
         for (int i = 0; i < frogs.Count; i++)
         {
             frogs[i].rectTransform.gameObject.transform.SetSiblingIndex(i);
-
         }
 
         foreach (var frog in frogs)
+        {
+            float originalY = frog.rectTransform.anchoredPosition.y;
+            frog.sequence = DOTween.Sequence();
 
-        {   frog.sequence = DOTween.Sequence();
-            //frog.frogRectTransform.DOAnchorPosY(frog.frogRectTransform.anchoredPosition.y - 20, 0.10f).SetLoops(1,LoopType.Yoyo).SetEase(Ease.InOutSine);
-            frog.tweenerInDown = frog.frogRectTransform.DOAnchorMax(new Vector2(1,  0.5f), 0.50f).SetEase(Ease.OutSine).OnComplete(() =>
+            frog.tweenerInDown = frog.frogRectTransform.DOAnchorMax(new Vector2(1, 0.5f), 0.50f).SetEase(Ease.OutSine).OnComplete(() =>
             {
                 if (frog.frogScript.clicked)
                 {
                     frog.sequence.Pause();
                 }
-            }); 
+            });
             frog.tweenerInUp = frog.frogRectTransform.DOAnchorMax(new Vector2(1, 1f), 0.33f).SetEase(Ease.InSine).OnComplete(() =>
             {
                 if (frog.frogScript.clicked)
                 {
                     frog.sequence.Pause();
                 }
-            }); 
+            });
             frog.tweenerUp = frog.frogRectTransform.DOAnchorPosY(frog.frogRectTransform.anchoredPosition.y + 25, 0.5f).SetEase(Ease.OutSine);
             frog.tweenerDown = frog.frogRectTransform.DOAnchorPosY(frog.frogRectTransform.anchoredPosition.y, 0.5f).SetEase(Ease.InSine).OnComplete(() =>
             {
-                if(frog.frogScript.clicked)
+                if (frog.frogScript.clicked)
                 {
                     frog.sequence.Pause();
                 }
             });
-            
-           
+
             frog.sequence.Append(frog.tweenerInDown);
             frog.sequence.Append(frog.tweenerInUp);
             frog.sequence.Append(frog.tweenerUp);
             frog.sequence.Append(frog.tweenerDown);
-      
             frog.sequence.SetLoops(-1);
             frog.sequence.Pause();
 
+            // Define the three tweens
+            Tween up = frog.rectTransform.DOAnchorPosY(originalY + 10f, 1.5f);
+            Tween down = frog.rectTransform.DOAnchorPosY(originalY - 10f, 1.5f);
+            Tween reset = frog.rectTransform.DOAnchorPosY(originalY, 1.5f);
 
-
-            frog.LillypadSequence = DOTween.Sequence();
-            frog.LillypadDown = frog.rectTransform.DOAnchorPosY(frog.rectTransform.anchoredPosition.y - 5f, 0.915f);
-            frog.LillypadUp = frog.rectTransform.DOAnchorPosY(frog.rectTransform.anchoredPosition.y + 5f, 0.915f);
-           
-            frog.LillypadSequence.Append(frog.LillypadUp);
-            frog.LillypadSequence.Append(frog.LillypadDown);
-            //frog.LillypadSequence.Append(frog.rectTransform.DOAnchorPosY(frog.rectTransform.anchoredPosition.y , 0.915f););
-            frog.LillypadSequence.SetLoops(-1);
-            frog.LillypadSequence.Pause();
-         
+            // Create the sequence
+            // frog.LillypadSequence = DOTween.Sequence();
+            // frog.LillypadSequence.Append(down);
+            // frog.LillypadSequence.Append(reset);
+            // frog.LillypadSequence.Append(up);
+            // frog.LillypadSequence.SetLoops(-1);
+            // frog.LillypadSequence.Pause();
         }
     }
     
-    private void OnPulsatingTouch()
+    private void OnDestroy()
     {
-
+        Settings.OnTimeSelectorIndex -= OnTimeSelectorIndex;
+        GameLoopManager.GameStates -= OnGameState;
+        BuffFrogClicked -= OnBuffFrogClicked;
+        OnDoubleScore -= DoubleScore;
+        
+        // Cancel all async operations before destroying
+        destroyCancellationTokenGM?.Cancel();
+        destroyCancellationTokenGM?.Dispose();
+        
+        DOTween.KillAll();
     }
+    
+    private void Start()
+    {
+       
+    }
+
+    // Cancel current operations and create new cancellation token for new game iteration
+    private void ResetCancellationToken()
+    {
+        destroyCancellationTokenGM?.Cancel();
+        destroyCancellationTokenGM?.Dispose();
+        destroyCancellationTokenGM = new CancellationTokenSource();
+    }
+
     async private void OnBuffFrogClicked()
     {
+        // Do not trigger a buff if the game is no longer in the 'Playing' state.
+        if (_gameState != GameState.Playing)
+        {
+            return;
+        }
         TriggerBuffEffect();
-       await Awaitable.WaitForSecondsAsync(5f, destroyCancellationToken);
-        
-        GenerateNewBuffFrog();
     }
 
     private void TriggerBuffEffect()
     {
         int buffId = UnityEngine.Random.Range(0, 8);
-
         StartBuff(buffId);
         Score.text = score.ToString();
     }
@@ -206,148 +219,108 @@ public class GameManager : MonoBehaviour
     private void StartBuff(int buffId)
     {
         buffTrigger?.Invoke(buffId);
-       
-
-       
     }
 
-    private void GenerateNewBuffFrog()
-    {
-        
-        for(int i =0;i < frogs.Count;i++)
-        {
-            var rndm = UnityEngine.Random.Range(0, frogs.Count);
-            if (!frogs[rndm].isActive)
-            {
-               
-                frogs[rndm].frogScript.IsBuffFrog = true;
-                frogs[rndm].frogScript.image.sprite = s_buffFrog;
-                break;
-            }
-        }
-
-    }
     public void FrogShield()
     {
         if (frogShield == true)
         {
             for (int i = 0; i < frogs.Count - 1; i++)
             {
-
-               
             }
-
         }
         else if (frogShield == false)
         {
             for (int i = 0; i < frogs.Count - 1; i++)
             {
-                //   frogs[i].frogScript.ChangeToGreenFrog();
-
             }
         }
     }
+    
     public void DoubleScore()
     {
         if (doubleScore == true)
         {
             for(int i=0;i< frogs.Count - 1;i++)
             {
-
-           // frogs[i].frogScript.ChangeToGoldenFrog();
             }
-
         }
         else if (doubleScore == false)
         {
             for (int i = 0; i < frogs.Count - 1; i++)
             {
-             //   frogs[i].frogScript.ChangeToGreenFrog();
-                
             }
         }
-
     }
 
 
 
-    [BurstCompile]
     public void UpdateGame(GameState currentState)
-    { 
-    if (currentState == GameState.Playing&&spawnFrogs==true)
-    {   
-    
-        for (int i=0; i<frogs.Count;i++)
-        {
-            if (frogs[i].isActive)
+    {
+        if(_gameState==GameState.Playing)
+        { 
+            for (int i = 0; i < frogs.Count; i++)
             {
-                if (scaleByDistance)
+                if (frogs[i].isActive)
                 {
-                    distance = Mathf.Abs(frogs[i].rectTransform.anchoredPosition.y);
-                    adjustedDistance = (distance / totalDistance);
-                    frogs[i].rectTransform.localScale = new Vector3(1.5f * adjustedDistance, 1.5f * adjustedDistance, frogs[i].rectTransform.localScale.z);
-                }
-                if (movement == true)
-                {
-                        // 1 pixel per second * time.deltaTime*speed
-                        frogs[i].rectTransform.anchoredPosition += new Vector2(1f, 0) * Time.deltaTime  * Frogspeed;
-                    frogs[i].rectTransform.localPosition = new UnityEngine.Vector3(frogs[i].rectTransform.localPosition.x, frogs[i].rectTransform.localPosition.y, 1);
-                }
-                if (frogs[i].frogScript.clicked)
-                {
-                    frogs[i].isAnimating = false;
-               
+                    if (scaleByDistance)
+                    {
+                        distance = Mathf.Abs(frogs[i].rectTransform.anchoredPosition.y);
+                        adjustedDistance = (distance / totalDistance);
+                        frogs[i].rectTransform.localScale = new Vector3(1.5f * adjustedDistance, 1.5f * adjustedDistance, frogs[i].rectTransform.localScale.z);
+                    }
+
+                    if (movement == true)
+                    {
+                        frogs[i].rectTransform.anchoredPosition += new Vector2(1f, 0) * Time.deltaTime * Frogspeed;
+                        frogs[i].rectTransform.localPosition = new UnityEngine.Vector3(frogs[i].rectTransform.localPosition.x, frogs[i].rectTransform.localPosition.y, 1);
+                    }
+                    
+                    if (frogs[i].frogScript.clicked)
+                    {
+                        frogs[i].isAnimating = false;
+
                         if (pulsatingTouch)
                         {
-                            //GetNeighbourFrog(2);
-                            //if (frogs[i])
-                            //frogs[i].rectTransform.anchoredPosition.y
-                            //     frogs[i].rectTransform.anchoredPosition.x
-                       
                         }
+                    }
 
-               
-               
-                }
-               
-                if (frogs[i].rectTransform.anchoredPosition.x > maxBound.anchoredPosition.x)
-                {
-                       
-                            frogs[i].isActive = false;
-                        frogs[i].frogScript.transform.DOKill();
-                        frogs[i].frogScript.image.DOKill();
-                            frogs[i].rectTransform.anchoredPosition = new UnityEngine.Vector3(0, frogs[i].rectTransform.anchoredPosition.y, 1);
-                            frogs[i].frogScript.Reset();
-                        frogs[i].frogScript.isOutsideBounds = true;
-                        frogs[i].frogScript.image.sprite = s_frog;
-                            frogs[i].frogScript.IsBuffFrog = false;
-                            frogs[i].frogScript.clicked = false;
+                    if (frogs[i].rectTransform.anchoredPosition.x > maxBound.anchoredPosition.x)
+                    {
+                        frogs[i].isActive = false;
+                        frogs[i].rectTransform.anchoredPosition = new UnityEngine.Vector3(0, frogs[i].rectTransform.anchoredPosition.y, 1);
 
+                        if (frogs[i].frogScript.IsBuffFrog == true)
+                        {
+                            if (frogs[i].frogScript.swap)
+                            {
+                                frogs[i].frogScript.swap = false;
+                                GenerateNewBuffFrog();
+                            }
+                            frogs[i].frogScript.ChangeToNormalFrog();
+                        }
+                        else if (frogs[i].frogScript.IsBuffFrog != true)
+                        {
+                            frogs[i].frogScript.ChangeToNormalFrog();
+                        }
                         
-                    
+                        frogs[i].frogScript.Reset();
 
                         if (frogs[i].isAnimating)
                         {
                             frogs[i].isAnimating = false;
-                            frogs[i].LillypadSequence.Restart();
-                            frogs[i].LillypadSequence.Pause();
+                         //  frogs[i].LillypadSequence.Restart();
+                         //  frogs[i].LillypadSequence.Pause();
                             frogs[i].sequence.Restart();
                             frogs[i].sequence.Pause();
-
                         }
-             
-                       
+                     
+                    }
                 }
             }
-
         }
     }
-    }
 
-    public void pauseAnimations()
-    {
-       
-    }
     async public void StartPulsatingTouch(GameObject frogObj)
     {
         var frogPos = frogObj.GetComponent<RectTransform>();
@@ -364,7 +337,6 @@ public class GameManager : MonoBehaviour
                 {
                     neighbours.Add(frogs[i]);
                 }
-               
             }
         }
         
@@ -381,13 +353,8 @@ public class GameManager : MonoBehaviour
                 lesser.Add(neighbours[i]);
             }
         }
-        // for (int i = 0; i < neighbours.Count; i++)
-        //     {
-        //         neighbours[i].frogScript.onClicked();
-        //     await Awaitable.WaitForSecondsAsync(0.1f, destroyCancellationToken);
-        //     }
+
         larger.Sort((a, b) => a.rectTransform.position.x.CompareTo(b.rectTransform.position.x));
-        //lesser.Sort((a, b) => a.rectTransform.anchoredPosition.x.CompareTo(b.rectTransform.anchoredPosition.x));
 
         var count= (larger.Count>lesser.Count)? larger.Count: lesser.Count;
         for(int i = 0; i< count; i++)
@@ -395,97 +362,61 @@ public class GameManager : MonoBehaviour
             if(i<larger.Count)
             {
                 larger[i].frogScript.onClicked();
-
             }
             if (i<lesser.Count)
             {
                 lesser[i].frogScript.onClicked();
-
             }
-            await Awaitable.WaitForSecondsAsync(0.1f, destroyCancellationToken);
+            await Awaitable.WaitForSecondsAsync(0.1f);
+        }
+    }
+
+ async private void OnGameState(GameState gameState)
+    {
+        _gameState = gameState;
+
+        if (_gameState == GameState.Start)
+        {
+            score = 0;
+            // Reset cancellation token for new game iteration
+            ResetCancellationToken();
         }
         
-
-
-
-
-
-
-        //-155.7142857142857f, -311.4285714285714f, -467.1428571428571f,-622.8571428571428f
-    }
-    private void FixedUpdate()
-    {
-
-        if (spawnFrogs == true)
+        if (_gameState == GameState.Playing)
         {
+            _frogspeed = 640;
+            ActivateFrog();
+            GenerateNewBuffFrog();
+            GenerateNewBuffFrog();
+            GenerateNewBuffFrog();
+            StartTimer();
+        }
+        
+        if(_gameState==GameState.GameOver)
+        {
+            // Centralize all game over logic into a coroutine to prevent race conditions
+            StartCoroutine(GameOverCleanupCoroutine());
+        }
+    }
 
-            for (int i = 0; i < frogs.Count; i++)
+    private void GenerateNewBuffFrog()
+    {
+        for (int i = 0; i < frogs.Count; i++)
+        {
+            var rndm = UnityEngine.Random.Range(0, frogs.Count);
+            if (!frogs[rndm].isActive && frogs[rndm].frogScript.IsBuffFrog!=true)
             {
-                if (frogs[i].isActive)
-                {
-                    // frogs[i].frogRectTransform.localScale = new UnityEngine.Vector3(1f, frogs[i].frogRectTransform.localScale.y+((Mathf.Sin(Time.time * frogs[i].speed * 0.0001f )+1) * 0.5f), frogs[i].frogRectTransform.localScale.z);
-                    // frogs[i].frogRectTransform.offsetMax -=  new UnityEngine.Vector2(0, (((Mathf.Sin(Time.time )-1)+1/2)) );
-                    // //frogs[i].frogRectTransform.offsetMin -= new UnityEngine.Vector2(0, ((Mathf.Sin(Time.time * frogs[i].speed * 0.0001f) - 1) + 1) / 2);
-                    // frogs[i].frogRectTransform.anchoredPosition -= new UnityEngine.Vector2(0, (((Mathf.Sin(Time.time * jumpSpeed) -1)+1 / 2 )  ) );
-                    //                                                                             //(((Mathf.Sin(Time.time * frogs[i].speed * 0.0001f) - 1) + 1 / 2) * 3
-                    // frogs[i].rectTransform.anchoredPosition -= new UnityEngine.Vector2(0, ((Mathf.Sin(Time.time * lilyPadSpeed) + 1) - 1) );
-                    // Create a sequence for moving up
-
-
-                 //   Sequence animSequenceUp = DOTween.Sequence();
-                 //  frogs[i].frogRectTransform.DOAnchorPosY(frogs[i].frogRectTransform.anchoredPosition.y + 1f, 0.2f).OnComplete(() =>
-                 //   {
-                 //       frogs[i].frogRectTransform.DOAnchorPosY(frogs[i].frogRectTransform.anchoredPosition.y - 1f, 0.2f);
-                 //
-                 //   });
-
-                    
-
-                     //Create a sequence for moving down
-                     //Sequence animSequenceDown = DOTween.Sequence();
-                     //animSequenceDown.Append(frogs[i].frogRectTransform.DOAnchorPosY(frogs[i].rectTransform.anchoredPosition.y, 0.5f)).SetDelay(0.50f);
-
-                    // Play both sequences
-                
-                  
-
-                    //   animSequenceDown.Play();
-
-                    // frogs[i].rectTransform.DOAnchorPosY(frogs[i].rectTransform.anchoredPosition.y + 0.1f, 0.1f);
-
-                }
-
+                frogs[rndm].frogScript.IsBuffFrog = true;
+                frogs[rndm].frogScript.ChangeToBuffFrog();
+                break;
             }
-
         }
     }
-    private void OnGameState( GameState gameState)
-    {
-        if(gameState==GameState.Start)
-        {
-        
-        }
-    if(gameState==GameState.Playing)
-    {
-        
 
-            score= 0;
-            spawnFrogs = true;
-         ActivateFrog();
-
-            GenerateNewBuffFrog();
-            GenerateNewBuffFrog();
-            GenerateNewBuffFrog();
-
-            if (timer==true)
-         StartTimer();
-    }
-   
-    }
     async void ActivateFrog()
     {
         List<frogObject> frogsCpy = new List<frogObject>(frogs);
-        
+        // Shuffle the frog list
         int n = frogs.Count;
         while (n > 1)
         {
@@ -495,28 +426,22 @@ public class GameManager : MonoBehaviour
             frogsCpy[k] = frogsCpy[n];
             frogsCpy[n] = value;
         }
-        int i=0;
+        
+        int i = 0;
         try
         {
-
-            while (!destroyCancellationToken.IsCancellationRequested&& spawnFrogs)
+            while (_gameState == GameState.Playing && !destroyCancellationTokenGM.Token.IsCancellationRequested)
             {
-
-              
-
-                if (frogsCpy[i].isActive == false)
-                    {
-                         frogsCpy[i].isActive=true;
+                if (!frogsCpy[i].isActive)
+                {
+                    frogsCpy[i].isActive = true;
                     frogsCpy[i].isAnimating = true;
-                    frogsCpy[i].LillypadSequence.Play();
+                   // frogsCpy[i].LillypadSequence.Play();
                     frogsCpy[i].sequence.Play();
-                       
-                    }
-                
-                
-      
+              
+                    await Awaitable.WaitForSecondsAsync(0.5f, destroyCancellationTokenGM.Token);
+                }
 
-                await Awaitable.WaitForSecondsAsync(timeBetweenFrogSpawns*frogSpawnFrequency, destroyCancellationToken);
                 i++;
                 if (i >= frogs.Count)
                 {
@@ -526,33 +451,41 @@ public class GameManager : MonoBehaviour
         }
         catch (OperationCanceledException)
         {
-            Debug.Log("destroyCancellationToken was cancelled");
+            // The exception is expected on cancellation.
+            // The FinalFrogResetCoroutine will handle all cleanup.
+ 
+        }
+        finally
+        {
+            frogsCpy.Clear();
         }
     }
+
     async public void StartTimer()
     {
-        while(!destroyCancellationToken.IsCancellationRequested&&spawnFrogs)
+        try
         {
-            
-            if (_gameTime > 0f)
+            while (_gameTime > 0f && _gameState == GameState.Playing && !destroyCancellationTokenGM.Token.IsCancellationRequested)
             {
-               
                 _gameTime -= 1f;
-                    if (_gameTime <= 0f)
-                    {
-                        EndGame();
 
-                    }
-                    // Update the UI Text component to display the remaining time
-                    UpdateTimerDisplay();
+                if (_gameTime <= 0f)
+                {
+                    await Awaitable.WaitForSecondsAsync(0.5f, destroyCancellationTokenGM.Token);
+                    if (_gameState != GameState.GameOver)
+                        GameLoopManager.GameStates?.Invoke(GameState.GameOver);
+                }
 
-                
-                await Awaitable.WaitForSecondsAsync(1f, destroyCancellationToken);
+                UpdateTimerDisplay();
+                await Awaitable.WaitForSecondsAsync(1f, destroyCancellationTokenGM.Token);
             }
-            
         }
-   
+        catch (OperationCanceledException)
+        {
+            // Expected when cancellation is requested
+        }
     }
+    
     public void UpdateTimerDisplay()
     {
         if (timerText != null)
@@ -560,104 +493,20 @@ public class GameManager : MonoBehaviour
             timerText.text = FormatTime(_gameTime);
         }
     }
+    
     string FormatTime(float totalSeconds)
     {
-        int minutes = Mathf.FloorToInt(totalSeconds / 60);  // Beräkna antalet minuter
-        int seconds = Mathf.FloorToInt(totalSeconds % 60);  // Räkna ut antalet sekunder
-
-        // Returnera strängen i formatet "MM:SS", där sekunder alltid visas med två siffror
+        int minutes = Mathf.FloorToInt(totalSeconds / 60);  
+        int seconds = Mathf.FloorToInt(totalSeconds % 60);  
         return string.Format("{0:00}:{1:00}", minutes, seconds);
     }
-    public void EndGame()
-    {
-        
-        _gameTime = 0;
-        // GameLoopManager.instance.ChangeState(GameState.MainMenu);
-        foreach (var frog in frogs)
-        {
-            frog.rectTransform.anchoredPosition = new UnityEngine.Vector3(0, frog.rectTransform.anchoredPosition.y, 1);
-            frog.isActive = false;
-            frog.frogRectTransform.DOScale(1.0f, 1.0f);
-            frog.frogScript.image.DOFade(1.0f, 1.0f);
-            frog.frogScript.clicked = false;
-            frog.frogScript.IsBuffFrog = false;
-            frog.frogScript.Reset();
-            frog.frogScript.image.sprite = s_frog;
-           
 
-        }
-        switch (GameLoopManager.progress._timeLimitIndex)
-        {
-            case 0:
-
-                if (score > GameLoopManager.progress.Highscore30)
-                {
-                    UIManager.isHighScore = true;
-                    GameLoopManager.progress.Highscore30 = score;
-                }
-                break;
-                case 1:
-                if (score > GameLoopManager.progress.Highscore60)
-                {
-                    GameLoopManager.progress.Highscore60 = score;
-                    UIManager.isHighScore = true;
-                }
-                break;
-                case 2:
-                if (score > GameLoopManager.progress.Highscore90)
-                {
-                    GameLoopManager.progress.Highscore90 = score;
-                    UIManager.isHighScore = true;
-                }
-                break;
-                case 3:
-                if (score > GameLoopManager.progress.Highscore120)
-                {
-                    GameLoopManager.progress.Highscore120 = score;
-                    UIManager.isHighScore = true;
-                }
-                break;
-
-        }
-        GameLoopManager.progress._score = score;
-        ProgressManager.SaveGameProgress("savedProgress", GameLoopManager.progress);
-        score = 0;
-        Score.text = score.ToString();
-
-        BuffManager.instance.turnOffAllBuffs();
-        BuffManager.instance.Reset();
-        spawnFrogs = false;
-        GameLoopManager.GameStates?.Invoke(GameState.GameOver);
-
-
-    }
     public void resetPause()
     {
         _gameTime = 0;
-        // GameLoopManager.instance.ChangeState(GameState.MainMenu);
-        foreach (var frog in frogs)
-        {
-            frog.rectTransform.anchoredPosition = new UnityEngine.Vector3(0, frog.rectTransform.anchoredPosition.y, 1);
-            frog.isActive = false;
-            frog.frogScript.image.sprite = s_frog;
-            frog.frogScript.clicked = false;
-            frog.frogScript.IsBuffFrog = false;
-            frog.frogScript.Reset();
-            frog.frogScript.image.sprite = s_frog;
-
-
-        }
-        score = 0;
-        Score.text = score.ToString();
-
-        BuffManager.instance.Reset();
-        spawnFrogs = false;
-
-        GameLoopManager.GameStates?.Invoke(GameState.MainMenu);
-
-
+        GameLoopManager.GameStates?.Invoke(GameState.GameOver);
+        
     }
-
 
     private void OnTimeSelectorIndex(int index)
     {
@@ -667,13 +516,102 @@ public class GameManager : MonoBehaviour
             _gameTime = gameTimes[index];
         }
     }
+    
     public void addScore()
     {
         score= score + scoreAmount;
         Score.text = score.ToString();
     }
 
+    private IEnumerator GameOverCleanupCoroutine()
+    {
+        // 1. Cancel all async tasks like ActivateFrog and StartTimer
+        destroyCancellationTokenGM?.Cancel();
+        _gameTime = 0;
 
+        // 2. Wait for the end of the frame. This is crucial to let the cancellation propagate
+        // and stop the ActivateFrog loop before we proceed with cleanup.
+        yield return new WaitForEndOfFrame();
 
+        // 3. Now, perform the definitive reset on all frogs.
+        foreach (var frog in frogs)
+        {
+            frog.isActive = false;
+            frog.isAnimating = false;
+            frog.rectTransform.anchoredPosition = new UnityEngine.Vector3(0, frog.rectTransform.anchoredPosition.y, 1);
+            frog.frogScript.transform.DOKill();
+            frog.frogScript.image.DOKill();
+            frog.frogScript.maxTouches= 1;
 
+           // frog.LillypadSequence.Restart();
+           // frog.LillypadSequence.Pause();
+            frog.sequence.Restart();
+            frog.sequence.Pause();
+            
+            frog.frogScript.Reset();
+            frog.frogScript.ChangeToNormalFrog();
+        }
+
+        // 4. Handle scoring and highscore saving
+        if (paused != true)
+        {
+            switch (GameLoopManager.progress._timeLimitIndex)
+            {
+                case 0:
+                    if (score > GameLoopManager.progress.Highscore30)
+                    {
+                        UIManager.isHighScore = true;
+                        GameLoopManager.progress.Highscore30 = score;
+                    }
+                    break;
+                case 1:
+                    if (score > GameLoopManager.progress.Highscore60)
+                    {
+                        GameLoopManager.progress.Highscore60 = score;
+                        UIManager.isHighScore = true;
+                    }
+                    break;
+                case 2:
+                    if (score > GameLoopManager.progress.Highscore90)
+                    {
+                        GameLoopManager.progress.Highscore90 = score;
+                        UIManager.isHighScore = true;
+                    }               
+                    break;
+                case 3:
+                    if (score > GameLoopManager.progress.Highscore120)
+                    {
+                        GameLoopManager.progress.Highscore120 = score;
+                        UIManager.isHighScore = true;
+                    }
+                    break;
+            }
+            
+            GameLoopManager.progress._score = score;
+            ProgressManager.SaveGameProgress("savedProgress", GameLoopManager.progress);
+        }
+
+        // 5. Wait a short moment before clearing buffs, as you requested.
+        // This ensures any last-second click events are processed safely.
+        yield return new WaitForSeconds(0.2f);
+        
+        // 6. Now clear the buffs
+        
+            BuffManager.instance.turnOffAllBuffs();
+            BuffManager.instance.Reset();
+           
+        
+
+        // 7. Finally, transition to the highscore screen
+        if (paused != true)
+        {
+            GameLoopManager.GameStates?.Invoke(GameState.Highscore);
+        }
+
+        // 8. Reset score and pause state for the next round
+        score = 0;
+        Score.text = score.ToString();
+        if (paused) { BuffManager.instance.buffsUsed.Clear(); }
+        paused = false;
+    }
 }

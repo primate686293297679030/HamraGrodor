@@ -12,7 +12,7 @@ public class TouchStart : MonoBehaviour, IPointerClickHandler
     public void OnPointerClick(PointerEventData eventData)
     {
         // This method will be called when the UI button is clicked/touched
-        Debug.Log("Button Clicked!");
+       
         loadMenuOptions.onPlayButton();
 
         // Perform your button click logic here

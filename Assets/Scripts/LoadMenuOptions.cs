@@ -60,7 +60,7 @@ public class LoadMenuOptions : MonoBehaviour
     [SerializeField] private Image _GameTimeShadow;
 
     [SerializeField] private Image music;
-    [SerializeField] private Image audio;
+    [SerializeField] private Image _audio;
 
     [SerializeField] private Image increase;
     [SerializeField] private Image decrease ;
@@ -128,7 +128,7 @@ public class LoadMenuOptions : MonoBehaviour
         seagrass.DOFade(0, 0);
         seagrass2.DOFade(0, 0);
         music.DOFade(0, 0);
-        audio.DOFade(0, 0);
+        _audio.DOFade(0, 0);
         _GameTimeShadow.DOFade(0, 0f);
         _GameTime.DOFade(0, 0f);
         increase.DOFade(0, 0);
@@ -229,7 +229,7 @@ public class LoadMenuOptions : MonoBehaviour
 
     public void onPlayButton()
     {
-
+        GameLoopManager.GameStates?.Invoke(GameState.Start);
         Game.gameObject.SetActive(true);
         play.enabled = false;
         about.enabled = false;
@@ -298,6 +298,7 @@ public class LoadMenuOptions : MonoBehaviour
         _pauseButton.DOFade(1, 1f).SetEase(Ease.InSine);
         Game.gameObject.SetActive(false);
         StopCoroutine(countdownCoroutine);
+       
         GameLoopManager.GameStates?.Invoke(GameState.Playing);
         // Countdown completed, you can perform any other actions here
     }
@@ -371,7 +372,7 @@ public class LoadMenuOptions : MonoBehaviour
          seagrass.DOFade(1, time);
          seagrass2.DOFade(1, time);
          music.DOFade(1, time);
-         audio.DOFade(1, time);     
+         _audio.DOFade(1, time);     
          increase.DOFade(1, time);
          decrease.DOFade(1, time);
          _GameTime.DOFade(1, time);
@@ -399,7 +400,7 @@ public class LoadMenuOptions : MonoBehaviour
        seagrass.DOFade(0, time).SetEase(Ease.InOutSine); 
        seagrass2.DOFade(0, time).SetEase(Ease.InOutSine); 
        music.DOFade(0, time).SetEase(Ease.InOutSine); 
-       audio.DOFade(0, time).SetEase(Ease.InOutSine);      
+       _audio.DOFade(0, time).SetEase(Ease.InOutSine);      
        increase.DOFade(0, time).SetEase(Ease.InOutSine); 
        decrease.DOFade(0, time).SetEase(Ease.InOutSine); 
        _GameTime.DOFade(0, time).SetEase(Ease.InOutSine); 
@@ -493,7 +494,7 @@ public class LoadMenuOptions : MonoBehaviour
         else if (index==3)
         {
              UIManager.instance.UnloadScorePage();
-          await  Awaitable.WaitForSecondsAsync(1f, destroyCancellationToken);
+          await  Awaitable.WaitForSecondsAsync(1f);
             onGameBoardBackButton();
         }
         else if(index ==4)
@@ -503,6 +504,7 @@ public class LoadMenuOptions : MonoBehaviour
                 
                 touchBlocker.SetActive(true);
                 isPaused = true;
+                GameManager.paused = true;
            
                 pauseGameObject.SetActive(true);
                 for (int i = 0; i < pausePageImages.Count; i++)
@@ -527,7 +529,8 @@ public class LoadMenuOptions : MonoBehaviour
                 Time.timeScale = 1;
                 touchBlocker.SetActive(false);
                 isPaused = false;
-               
+                GameManager.paused = false;
+
                 pauseGameObject.SetActive(false);
                 for (int i = 0; i < pausePageImages.Count; i++)
                 {
@@ -551,6 +554,7 @@ public class LoadMenuOptions : MonoBehaviour
         {
             Time.timeScale = 1;
             touchBlocker.SetActive(false);
+            GameManager.paused = true;
             isPaused = false;
 
             for (int i = 0; i < pausePageImages.Count; i++)

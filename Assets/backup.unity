@@ -1743,7 +1743,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 502508353
-  m_SortingLayer: 7
+  m_SortingLayer: 8
   m_SortingOrder: 0
   m_Sprite: {fileID: 8966945178157639174, guid: 35cda606369feba4fb9caefcf3c32a69, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -3391,6 +3391,7 @@ MonoBehaviour:
   gameManager: {fileID: 562723441}
   inputManager: {fileID: 1162628230}
   uiManager: {fileID: 1336968306}
+  developerMenu: {fileID: 0}
 --- !u!4 &266141201
 Transform:
   m_ObjectHideFlags: 0
@@ -3552,16 +3553,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30a504c1733df9a4889c90ebe9342a1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  animationDuration: 1
   BubbleDelay: 0
   BubbleDelayBack: 0
   minimumSpeed: 0.74
   maximumSpeed: 1.08
-  numberOfBubbles: 600
   _speedY: 1544
+  numberOfBubbles: 600
   bubblePrefab: {fileID: 1348824943720476485, guid: 5fd08ee2cc7f51a42981d02617298944, type: 3}
   settingsBackButton: {fileID: 1369344177}
   settings: {fileID: 1319561800}
-  animationDuration: 1
 --- !u!114 &287450613
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5698,7 +5699,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 502508353
-  m_SortingLayer: 7
+  m_SortingLayer: 8
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: e3fa543cca1df9445affdd17402aaf4c, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -5892,7 +5893,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 502508353
-  m_SortingLayer: 7
+  m_SortingLayer: 8
   m_SortingOrder: 0
   m_Sprite: {fileID: 8861480726252175340, guid: 66c793e93e26563499e65227f341d8fd, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -7244,6 +7245,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nightPanel: {fileID: 104751467}
+  fadePanel: {fileID: 0}
   Score: {fileID: 732729652}
   s_frog: {fileID: 21300000, guid: c66ee014ecf6cee408935c77273dd999, type: 3}
   s_buffFrog: {fileID: -8739492991971438495, guid: b2906a758f7ccc443bd5d19e2a96bd30, type: 3}
@@ -7255,14 +7257,13 @@ MonoBehaviour:
   maxSpawnTime: 3
   frogCount: 30
   timeBetweenFrogSpawns: 0.5
-  spawnFrogs: 0
   scaleByDistance: 0
   movement: 1
   timer: 1
   jumpSpeed: 1
   jumpAmount: 1
   lilyPadSpeed: 1
-  frogspeed: 5
+  _frogspeed: 640
   scoreAmount: 1
   frogSpawnFrequency: 1
 --- !u!4 &562723442
@@ -7307,6 +7308,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b15f487c44fafaa40b73411cbfe8ecda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  SpeedBoostValue: 0
+  TimeBoostValue: 0
+  DoubleScoreValue: 0
+  PulsatingTouchValue: 0
+  NightModeValue: 0
+  TimeDecreaseValue: 0
+  SpeedDecreaseValue: 0
+  FrogShieldValue: 0
+  SpeedBoostLength: 0
+  TimeBoostLength: 0
+  DoubleScoreLength: 0
+  PulsatingTouchLength: 0
+  NightModeLength: 0
+  TimeDecreaseLength: 0
+  SpeedDecreaseLength: 0
+  FrogShieldLength: 0
+  IsBuffActivating: 0
+  DupletBuff_Icon: {fileID: 0}
   speedBoostBuff: {fileID: 0}
   buffPanelList:
   - {fileID: 813872668}
@@ -7329,6 +7348,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: d889b987daf1826479825404f4e19586, type: 2}
   - {fileID: 11400000, guid: ced70a9cee37cfa42b5e99ac068d1255, type: 2}
   - {fileID: 11400000, guid: 80e58d69ad822d94f909e072cb44d6a8, type: 2}
+  buffsUsed: []
   sliders:
   - {fileID: 1487109044}
   - {fileID: 808545978}
@@ -9908,6 +9928,8 @@ MonoBehaviour:
   _enableMusic: {fileID: -5243714252096322686, guid: 8b206fca789da9348941b8a4a4a4b64b, type: 3}
   _musicButton: {fileID: 1321855834}
   _soundButton: {fileID: 1920668920}
+  increaseButton: {fileID: 0}
+  decreaseButton: {fileID: 0}
   _highScoreText: {fileID: 719140981}
   _timeSelector:
   - 30
@@ -18550,6 +18572,13 @@ MonoBehaviour:
   - {fileID: 1666459855}
   - {fileID: 2100295640}
   transparentSprite: {fileID: -6978546497571662896, guid: d701b9ee28317d44ea8bc37f4897568a, type: 3}
+  _pauseButton: {fileID: 0}
+  _pauseButtonImage: {fileID: 0}
+  BlurPanel: {fileID: 0}
+  Timer: {fileID: 0}
+  FrogCounter: {fileID: 0}
+  _timer: {fileID: 0}
+  _frogCounter: {fileID: 0}
 --- !u!114 &1336968307
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18570,8 +18599,11 @@ MonoBehaviour:
   _logoMenu: {fileID: 2043594397}
   _backbutton: {fileID: 766715951}
   rectTransformSettings: {fileID: 806862216}
+  rectTransformSettings2: {fileID: 0}
   rectTransformMenu: {fileID: 1461416037}
+  rectTransformMenu2: {fileID: 0}
   rectTransformAbout: {fileID: 77074617}
+  RTcountDownText: {fileID: 0}
   StoryScreenPanel: {fileID: 1601751784}
   gameBoard: {fileID: 356495139}
   canvasMenu: {fileID: 1336968304}
@@ -18597,8 +18629,9 @@ MonoBehaviour:
   seagrass: {fileID: 2027724}
   seagrass2: {fileID: 956143152}
   _GameTime: {fileID: 1493377369}
+  _GameTimeShadow: {fileID: 0}
   music: {fileID: 1321855834}
-  audio: {fileID: 1920668920}
+  _audio: {fileID: 0}
   increase: {fileID: 341350658}
   decrease: {fileID: 824620139}
   fishh: {fileID: 114479265}
@@ -18613,8 +18646,11 @@ MonoBehaviour:
   play: {fileID: 1323685687}
   about: {fileID: 1399149270}
   settings: {fileID: 1319561800}
+  pauseText1: {fileID: 0}
+  pauseText2: {fileID: 0}
   pauseGameObject: {fileID: 146730628}
   touchBlocker: {fileID: 1128088298}
+  bubbleSpawner: {fileID: 0}
 --- !u!225 &1336968308
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -28161,6 +28197,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36dedc4bcd788d84a861a25023f5407b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  DataboxPages: []
   dataBoxGameObjects:
   - {fileID: 660552548}
   - {fileID: 221692046}

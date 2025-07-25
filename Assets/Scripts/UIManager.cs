@@ -9,13 +9,14 @@ using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
 using TMPro;
 using NUnit.Framework;
+using System.Threading;
 
 public class UIManager : MonoBehaviour
 {
     [SerializeField] private List<RectTransform> UIButtonsList;
-    private float minWaitTime = 5f; // Minimum wait time in seconds
-    private float maxWaitTime = 15f; // Maximum wait time in seconds
-    private float buttonIndex = 0;
+
+ 
+   
 
     float xPos;
     float yPos;
@@ -44,7 +45,7 @@ public class UIManager : MonoBehaviour
     List<Image> i_scorePageImages=new List<Image>();
     public List<Image> usedBuffImages;
 
-    private bool isCountdownRunning = false;
+   
     public static UIManager instance;
 
     RectTransform scorepageTransform;
@@ -59,7 +60,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Image FrogCounter;
     [SerializeField] private TextMeshProUGUI _timer;
     [SerializeField] private TextMeshProUGUI _frogCounter;
-
+    private CancellationTokenSource destroyCancellationTokenSource;
+    GameState _gameState;
 
     private void Awake()
     {
@@ -71,6 +73,7 @@ public class UIManager : MonoBehaviour
         {
             Destroy(this);
         }
+        destroyCancellationTokenSource = new CancellationTokenSource();
     }
     private void Start()
     {
@@ -96,30 +99,35 @@ public class UIManager : MonoBehaviour
         GameLoopManager.GameStates -= OnGameState;
     
     }
-    async private void OnGameState(GameState state)
+   private void OnGameState(GameState state)
     {
-        if(state==GameState.MainMenu)
+        _gameState = state;
+        if(_gameState==GameState.MainMenu)
         {
            GetComponent<Canvas>().sortingOrder=-1;
-             OnMainMenuAnimation(state);
+             OnMainMenuAnimation();
           
         }
-        else if(state==GameState.Playing)
+        else if(_gameState==GameState.Playing)
         {
-         
+            destroyCancellationTokenSource.Cancel();
 
         }
-
-
-        if(state== GameState.GameOver)
+        if(_gameState ==GameState.GameOver)
         {
-          //  BlurPanel.gameObject.SetActive(true);
-            //BlurPanel.DOFade(0.43f, 1).SetEase(Ease.InOutSine);
-
             Timer.DOFade(0, 0.5f);
             FrogCounter.DOFade(0, 0.5f);
             _timer.DOFade(0, 0.5f);
             _frogCounter.DOFade(0, 0.5f);
+
+        }
+
+        if(_gameState == GameState.Highscore)
+        {
+          //  BlurPanel.gameObject.SetActive(true);
+            //BlurPanel.DOFade(0.43f, 1).SetEase(Ease.InOutSine);
+
+ 
 
             switch (GameLoopManager.progress._timeLimitIndex)
             {
@@ -143,11 +151,11 @@ public class UIManager : MonoBehaviour
                     UpdateScorePage(GameLoopManager.progress.Highscore120, isHighScore);
                     break;
             }
-            for(int i =0; i< BuffManager.buffsUsed.Count;i++)
+            for(int i =0; i< BuffManager.instance.buffsUsed.Count;i++)
             {
-                usedBuffImages[i].sprite = BuffManager.buffsUsed[i];
+                usedBuffImages[i].sprite = BuffManager.instance.buffsUsed[i];
             }
-            BuffManager.buffsUsed.Clear();
+            BuffManager.instance.buffsUsed.Clear();
             
         }
     }
@@ -239,13 +247,12 @@ public class UIManager : MonoBehaviour
 
 
     }
-    async public void UpdateUI(GameState currentState)
+     public void UpdateUI(GameState currentState)
     {
 
-        if(currentState==GameState.MainMenu)
+        if (currentState == GameState.MainMenu)
         {
-            UIButtonsList[randomIndex].anchoredPosition = new Vector2( xPos,yPos);
-            UIButtonsList[randomIndex].rotation = Quaternion.Euler(0, 0, zRot);
+   
         }
         if (currentState == GameState.GameOver)
         {
@@ -253,19 +260,21 @@ public class UIManager : MonoBehaviour
         }
 
 
-
     }
  
 
 
 
-    public async void OnMainMenuAnimation(GameState state)
+    public async void OnMainMenuAnimation()
     {
-        while (!destroyCancellationToken.IsCancellationRequested)
+        UIButtonsList[randomIndex].anchoredPosition = new Vector2(xPos, yPos);
+        UIButtonsList[randomIndex].rotation = Quaternion.Euler(0, 0, zRot);
+
+        while (!destroyCancellationTokenSource.IsCancellationRequested)
         {
-            if (state == GameState.MainMenu)
+            if (_gameState == GameState.MainMenu)
             {
-                Debug.Log("MenuAnimation is running");
+               
                
 
 
@@ -283,10 +292,11 @@ public class UIManager : MonoBehaviour
                 // UIButtons[a].gameObject.transform.DOShakePosition(1, 100, 10, 90);
                 // UIButtons[a].gameObject.transform.DOShakeRotation(1, 100, 10, 90);
 
-                await Awaitable.WaitForSecondsAsync(UnityEngine.Random.Range(8, 16), destroyCancellationToken);
+                await Awaitable.WaitForSecondsAsync(UnityEngine.Random.Range(8, 16), destroyCancellationTokenSource.Token);
             }
             else
             {
+                destroyCancellationTokenSource.Cancel();
                 break;
             }
    

@@ -91,7 +91,10 @@ MonoBehaviour:
   smashedSprite: {fileID: -4297600498979174805, guid: 752f5961942d44a4fa181d4577406974, type: 3}
   poffSprite: {fileID: -3141556900118742873, guid: aaf6f35f841cc3a4a9815bd456947644, type: 3}
   normalSprite: {fileID: 21300000, guid: c66ee014ecf6cee408935c77273dd999, type: 3}
+  bufffrogSprite: {fileID: -8739492991971438495, guid: b2906a758f7ccc443bd5d19e2a96bd30, type: 3}
+  DefaultSprite: {fileID: 21300000, guid: c66ee014ecf6cee408935c77273dd999, type: 3}
   image: {fileID: 8537377650138445237}
+  frogListIndex: 0
   clicked: 0
   IsBuffFrog: 0
   touchCounter: 0
@@ -99,6 +102,8 @@ MonoBehaviour:
   golden: {fileID: 2100000, guid: 079ab5bde6f923748b9cb9056139f194, type: 2}
   defaultMaterial: {fileID: 2100000, guid: cabbe760cc3d50142a8da878a7584d08, type: 2}
   frog: {fileID: 0}
+  isOutsideBounds: 0
+  swap: 0
 --- !u!1 &7306487282992871161
 GameObject:
   m_ObjectHideFlags: 0

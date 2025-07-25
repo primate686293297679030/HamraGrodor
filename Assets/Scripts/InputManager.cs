@@ -15,7 +15,7 @@ public class InputManager : MonoBehaviour
             if (instance == null)
             {
 
-                instance = FindObjectOfType<InputManager>();
+                instance = FindAnyObjectByType<InputManager>();
                 if (instance == null)
                 {
                     GameObject inputManagerObject = new GameObject("InputManager");
@@ -26,13 +26,13 @@ public class InputManager : MonoBehaviour
         }
     }
 
-    // Define touch-related variables
+
     private bool isTouching = false;
     private Vector2 touchStartPosition;
 
     private void Update()
     {
-        // Handle mobile touch input
+
         HandleTouchInput();
     }
 

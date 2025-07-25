@@ -23,7 +23,7 @@ public class GameLoopManager : MonoBehaviour
         else if (instance != this)
         { Destroy(gameObject); }
 
-        Application.targetFrameRate = 60;
+       // Application.targetFrameRate = 60;
         initSave();
     }
     private void Start()
@@ -89,33 +89,30 @@ public class GameLoopManager : MonoBehaviour
         {
             Application.Quit();
         }
-        // Check for state transitions
+  
         HandleStateTransitions();
 
-        // Update game logic based on the current state
+     
         gameManager.UpdateGame(currentState);
 
-        // Handle player input
+ 
         inputManager.HandleInput(currentState);
 
-        // Update UI
+        
         uiManager.UpdateUI(currentState);
     }
 
     private void HandleStateTransitions()
     {
 
-        // Implement state transitions logic here
-        // For example, when the player clicks "Play" in the main menu, transition to Playing state.
+ 
     }
 
     public void ChangeState(GameState newState)
     {
-        // Handle exiting the current state (e.g., clean up)
-        // Transition to the new state
+      
         currentState = newState;
-        
-        // Handle entering the new state (e.g., setup)
+
     }
 }
 
@@ -132,5 +129,6 @@ public enum GameState
     Start,
     Playing,
     GameOver,
+    Highscore,
     Paused
 }

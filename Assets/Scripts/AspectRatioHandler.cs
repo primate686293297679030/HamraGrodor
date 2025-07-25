@@ -2,11 +2,11 @@ using UnityEngine;
 
 public class AspectRatioHandler : MonoBehaviour
 {
-    Camera camera;
+    Camera _camera;
   
     private void Start()
     {
-        camera = GetComponent<Camera>();
+        _camera = GetComponent<Camera>();
         ApplyAspectRatio();
     }
 
@@ -50,7 +50,7 @@ public class AspectRatioHandler : MonoBehaviour
 
         // Apply the calculated aspect ratio to the camera's rect
         Rect rect = new Rect(rectX, rectY, rectWidth, rectHeight);
-        camera.rect = rect;
+        _camera.rect = rect;
     }
 
 }

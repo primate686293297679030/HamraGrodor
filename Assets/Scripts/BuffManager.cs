@@ -28,6 +28,8 @@ public class BuffManager : MonoBehaviour
     public float TimeDecreaseLength;
     public float SpeedDecreaseLength;
     public float FrogShieldLength;
+    public bool IsBuffActivating = false;
+    public GameObject DupletBuff_Icon;
 
     public Buff speedBoostBuff;
     public List<Image> buffPanelList;
@@ -36,9 +38,9 @@ public class BuffManager : MonoBehaviour
     public static BuffManager instance;
     public List<Buff> buffObjectList;
     private List<int> buffIndexList= new List<int>();
-    public static Action<int> OnBuffFinnished;
+    public  Action<int> OnBuffFinnished;
     // Start is called before the first frame update
-    public static List<Sprite> buffsUsed=new List<Sprite>();
+    public  List<Sprite> buffsUsed=new List<Sprite>();
     public List<Slider> sliders;
     
     void Awake()
@@ -48,16 +50,18 @@ public class BuffManager : MonoBehaviour
             instance = this;
         else if (instance != this)
             Destroy(gameObject);
+
+   
     }
     void Start()
     {
         SpeedBoostValue = GameLoopManager.progress.SpeedBoostValue;
-       SpeedDecreaseValue = GameLoopManager.progress.SpeedDecreaseValue;
+        SpeedDecreaseValue = GameLoopManager.progress.SpeedDecreaseValue;
         NightModeLength = GameLoopManager.progress.NightModeLength;
+        UpdateBuffVariables();
         DeveloperMenu.OnApplyChanges += UpdateBuffVariables;
         GameManager.buffTrigger += ActivateBuff;
         OnBuffFinnished += RemoveBuff;
-        turnOffAllBuffs();
     }
     public void Reset()
     {
@@ -101,20 +105,21 @@ public class BuffManager : MonoBehaviour
 
 
     public void ActivateBuff(int index)
-    {
-   
-                AddBuff(index);
- 
+    {   
 
+                AddBuff(index);
+        IsBuffActivating = true;
     }
 
-    private void AddBuff(int index)
+  async  private void AddBuff(int index)
     {   bool isActive = false;
         if(buffIndexList.Count==0)
         {
             buffIndexList.Add(index);
-            buffObjectList[buffIndexList[buffIndexList.Count-1]].BuffTimer();
+             buffObjectList[buffIndexList[buffIndexList.Count-1]].BuffTimer();
+         
             InBuffAnimation(buffPanelList[0], buffCircleTimer[0]);
+            IsBuffActivating = false;
         }
         else
         {
@@ -122,21 +127,38 @@ public class BuffManager : MonoBehaviour
             {
                 if (buffIndexList[i] == index)
                 {
-                    buffObjectList[i].OnAlreadyActive();
+                  buffObjectList[buffIndexList[i]].OnAlreadyActive();
+                    //buffObjectList[i].OnAlreadyActive();
                     isActive = true;
+                    var icon = Instantiate(DupletBuff_Icon);
+                    icon.transform.SetParent(GameObject.Find("BuffContainer").transform, false);
+                    icon.GetComponent<RectTransform>().anchoredPosition = new Vector3(19.6f, -185f,0);
+
+                    var image = icon.gameObject.GetComponent<Image>();
+                    image.sprite = buffObjectList[index].sprite;
+                    image.DOFade(0.0f, 1.0f).OnComplete(()=>
+                    {
+                        Destroy(icon, 1.0f);
+                    });
+
+                  // buffIndexList.Add(index);
+                  // await buffObjectList[buffIndexList[buffIndexList.Count - 1]].BuffTimer();
+                  // UpdateBuffLocation();
+
+
                 }
             }
             if (!isActive)
             {
                 buffIndexList.Add(index);
                 buffObjectList[buffIndexList[buffIndexList.Count-1]].BuffTimer();
-                //InBuffAnimation(buffPanelList[buffIndexList.Count-1]);
-                UpdateBuffLocation();
+                 UpdateBuffLocation();
             }
+            IsBuffActivating = false;
         }
-    
-        
-       
+  
+
+
     }
     public void InBuffAnimation(Image img,Image img2)
     {
@@ -158,18 +180,20 @@ public class BuffManager : MonoBehaviour
     }
     public void UpdateBuffLocation()
     {
-        for(int i=0; i<buffIndexList.Count;i++)
-        {
-            OutBuffAnimation(buffPanelList[i], buffCircleTimer[i]);
-            buffPanelList[i].sprite = buffObjectList[buffIndexList[i]].sprite;
+        
+        
+            for (int i = 0; i < buffIndexList.Count; i++)
+            {
+                OutBuffAnimation(buffPanelList[i], buffCircleTimer[i]);
+                buffPanelList[i].sprite = buffObjectList[buffIndexList[i]].sprite;
 
-            InBuffAnimation(buffPanelList[i], buffCircleTimer[i]);
-        }
+                InBuffAnimation(buffPanelList[i], buffCircleTimer[i]);
+            }
+            
         
     }
- 
 
-    private void RemoveBuff(int uniqueID)
+    async private void RemoveBuff(int uniqueID)
     {
         for(int i=0; i< buffIndexList.Count;i++)
         {
@@ -182,16 +206,22 @@ public class BuffManager : MonoBehaviour
                 }
                 
                 OutBuffAnimation(buffPanelList[i], buffCircleTimer[i]);
-                UpdateBuffLocation();
+             UpdateBuffLocation();
             }
            
         }
     }
 
-    // Update is called once per frame
+   
     void Update()
     {
-        for(int i=0;buffIndexList.Count>i;i++)
+        for (int i = 0; i < buffIndexList.Count; i++)
+        {
+            sliders[i].value = buffObjectList[buffIndexList[i]]._time;
+
+        }
+
+        for (int i=0;buffIndexList.Count>i;i++)
         {
            if(i<buffIndexList.Count)
            {
@@ -204,22 +234,19 @@ public class BuffManager : MonoBehaviour
            }
           
         }
-        
-            for (int i = 0; i < buffIndexList.Count; i++)
-            {
-                sliders[i].value = buffObjectList[buffIndexList[i]]._time;
 
-            }
-        
-       
+   
+ 
+
 
     }
 
     public void turnOffAllBuffs()
     {
-        for (int i = 0; i < buffIndexList.Count; i++)
-        {
-            buffObjectList[buffIndexList[i]].BuffTimer(0);
-        }
+       for (int i = 0; i < buffIndexList.Count; i++)
+       {
+           buffObjectList[buffIndexList[i]].BuffTimer(0);
+       }
+        //buffIndexList.Clear();
     }
 }

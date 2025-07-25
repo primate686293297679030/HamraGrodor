@@ -1,0 +1,28 @@
+{
+    "folders": [
+        {
+            "name": "HamraGrodor",
+            "path": "."
+        }
+    ],
+    "settings": {
+        "files.exclude": {
+            "Library/": true,
+            "Temp/": true,
+            "obj/": true,
+            "**/*.meta": true
+        },
+        "search.exclude": {
+            "Library/": true,
+            "Temp/": true,
+            "obj/": true
+        }
+    },
+    "extensions": {
+        "recommendations": [
+            "ms-dotnettools.csharp",
+            "unity.unity-debug",
+            "kleber-swf.unity-code-snippets"
+        ]
+    }
+}

@@ -131,7 +131,7 @@ public class DeveloperMenu : MonoBehaviour
             }
             else if (dataBoxes[i].ValueI != -1)
             {
-                Debug.Log("intrunn");
+           
                 dataBoxes[i].TmValue.text = dataBoxes[i].ValueI.ToString();
             }
 
@@ -249,7 +249,7 @@ public class DeveloperMenu : MonoBehaviour
             }
         }
         ProgressManager.SaveGameProgress("savedProgress", GameLoopManager.progress); 
-        Debug.Log("Frogspeed: " + GameManager.instance._frogspeed);
+
         OnApplyChanges?.Invoke();
     }
     public void OnSliderChanged(string str)
@@ -312,8 +312,7 @@ public class DeveloperMenu : MonoBehaviour
             if (dataBoxes[i].ValueF != -1)
             {
                 dataBoxes[i].TmValue.text = dataBoxes[i].ValueF.ToString();
-                Debug.Log("intrunn");
-                Debug.Log("Frogs: " + GameManager.instance._frogspeed);
+   
             }
             else if (dataBoxes[i].ValueI != -1)
             {
@@ -346,7 +345,7 @@ public class DeveloperMenu : MonoBehaviour
             Slider[] sliders = dataBoxGameObjects[n].GetComponentsInChildren<Slider>();
 
             GameObject[] subDataBoxes=new GameObject[dataBoxGameObjects[n].transform.childCount];
-           // Debug.Log("childcount " + dataBoxGameObjects[n].transform.childCount);
+  
             for (int y=0; y< dataBoxGameObjects[n].transform.childCount;y++)
             {
                 subDataBoxes[y]=dataBoxGameObjects[n].transform.GetChild(y).gameObject;
@@ -373,7 +372,7 @@ public class DeveloperMenu : MonoBehaviour
                             object value = kvp.Value;
                             if (dataBoxGameObjects[n].name ==key)
                             {
-                                Debug.Log("inside box");
+                         
                                 db.Name = key;
                                 if(value is int intval)
                                 {
@@ -424,7 +423,7 @@ public class DeveloperMenu : MonoBehaviour
 
                     for (int j=0; j<goChildren.Length;j++)
                     {
-                        Debug.Log("gochil" + goChildren.Length);
+                    
                         if (goChildren[j].name == "Value")
                         {
                             foreach(var kvp in gameVariables)

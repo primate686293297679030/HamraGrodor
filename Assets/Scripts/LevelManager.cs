@@ -56,7 +56,7 @@ public class LevelManager : MonoBehaviour
 
 
     private float _target;
-    private bool initDelay = true;
+   
     private float time;
     private Task g;
     private float targetOrthographicSize;
@@ -133,15 +133,17 @@ public class LevelManager : MonoBehaviour
    
 
     }
-    async void SetFillAmount(float v)
+    void SetFillAmount(float v)
     {
        _progressBarObj.value = v;       
     }
     public async void OnContinue()
     {
+        _continueButton.enabled = false;
         _text.DOColor(new Color(1, 1, 1, 0f), 0.5f).SetEase(Ease.InSine);
         _continueButton.GetComponent<Image>().DOFade(0, 0.5f).SetEase(Ease.InSine);
         _continueButtonText.DOColor(new Color(1, 1, 1, 0f), 0.5f).SetEase(Ease.InSine);
+        
         img_hamra.DOFade(0, 0.5f).SetEase(Ease.InSine);
         img_grodor.DOFade(0,0.5f).SetEase(Ease.InSine);      
         await img_hamra.DOFade(0, 0.5f).AsyncWaitForCompletion();
@@ -149,8 +151,9 @@ public class LevelManager : MonoBehaviour
 
     }
 
-    public async void LoadMenu()
+    public void LoadMenu()
     {
+        _continueButton.gameObject.SetActive(false);
         _Menu.SetActive(true);
         blockTouchPanel.SetActive(true);
         _panelFilter.DOFade(0.33f, 0.9f).SetEase(Ease.InSine);

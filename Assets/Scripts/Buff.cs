@@ -42,7 +42,7 @@ public class Buff : ScriptableObject
   public float TimeDecreaseLength;
   public float SpeedDecreaseLength;
   public float FrogShieldLength;
-
+    bool alreadyActive = false;
     public static Buff instance;
 
     void Awake()
@@ -51,12 +51,8 @@ public class Buff : ScriptableObject
         {
             instance = this;
         }
-        else
-        {
-            GameObject.Destroy(this);
-        }
+        time = 0;
     }
-
 
 
     async public void BuffTimer()
@@ -70,26 +66,30 @@ public class Buff : ScriptableObject
         
         //BuffManager.instance.sliderTimer(uniqueId, _time);
 
-        while (_remainingTime != 0)
+        while (_remainingTime > 0)
         {
-            
-             await Awaitable.WaitForSecondsAsync(timeDecrease);
+       
+            await Awaitable.WaitForSecondsAsync(timeDecrease);
             _remainingTime-=timeDecrease;
             _time = _remainingTime / _buffTimerTotal;
             if (_remainingTime <= 0)
             {
-                BuffManager.OnBuffFinnished?.Invoke(uniqueId);
+                
+                BuffManager.instance.OnBuffFinnished?.Invoke(uniqueId);
                 TurnOffBuffEffect();
                 _buffTimerTotal = 0;
+               
                 break;
                 
-                
+
             }
-          
+           
+
         }
 
     }
-   public void updateVariables(float a,float b,float c)
+ 
+    public void updateVariables(float a,float b,float c)
     {
         SpeedBoostValue = a;
          SpeedDecreaseValue= b;
@@ -99,63 +99,62 @@ public class Buff : ScriptableObject
     public void BuffTimer(int i)
     {
         _remainingTime = i;
-        TurnOffBuffEffect();
+       // TurnOffBuffEffect();
         _remainingTime = 0;
-
+        GameManager.instance._frogspeed = 640;
     }
+
     public void OnAlreadyActive()
     {
-        //UniqueFunction();
-        switch(uniqueId)
+        _buffTimerTotal += 5;
+        _remainingTime += 5;
+
+        switch (uniqueId)
         {
+
            
 
             case 0:
-                _remainingTime += 5;
-                _buffTimerTotal += 5;
+      
                 break;
                 case 1:
                 GameManager.instance._gameTime += 5f;
+         
                 break;
                 case 2:
-                _remainingTime += 5;
-                _buffTimerTotal += 5;
+   
                 break;
                 case 3:
-                _remainingTime += 5;
-                _buffTimerTotal += 5;
+   
                 break;
                 case 4:
-                _remainingTime += 5;
-                _buffTimerTotal += 5;
+             
                 break;
                 case 5:
 
                 if (GameManager.instance._gameTime <= 5)
                 {
 
-                    GameManager.instance.EndGame();
+                    GameLoopManager.GameStates?.Invoke(GameState.GameOver);
                     GameManager.instance.UpdateTimerDisplay();
 
                 }
                 else
                 {
                     GameManager.instance._gameTime -= 5f;
+
                 }
                 break;
                 case 6:
-                _remainingTime += 5;
-                _buffTimerTotal += 5;
+
                 break;
                 case 7:
-                _remainingTime += 5;
-                _buffTimerTotal += 5;
+
                 break;
               
 
         }
-        _buffTimerTotal += 5;
-        _remainingTime += 5;
+
     }
 
     public void UniqueFunction()
@@ -174,9 +173,9 @@ public class Buff : ScriptableObject
         {
            
             case 0:
-                GameManager.instance.Frogspeed += SpeedBoostValue;
-                GameManager.instance.frogSpawnFrequency -= 0.25f;
-             
+                GameManager.instance.Frogspeed = GameManager.instance.Frogspeed + SpeedBoostValue;
+                GameManager.instance.frogSpawnFrequency = GameManager.instance.frogSpawnFrequency - 0.25f;
+
                 break;
             case 1:
                 GameManager.instance._gameTime += 5f;
@@ -201,7 +200,7 @@ public class Buff : ScriptableObject
                 if(GameManager.instance._gameTime <=5)
                 {
 
-                   GameManager.instance.EndGame();
+                   GameLoopManager.GameStates?.Invoke(GameState.GameOver);
                     GameManager.instance.UpdateTimerDisplay();
                     
                 }
@@ -212,8 +211,8 @@ public class Buff : ScriptableObject
                
                 break;
                 case 6:
-                GameManager.instance.Frogspeed -= SpeedDecreaseValue;
-                GameManager.instance.frogSpawnFrequency += 0.25f;
+                GameManager.instance.Frogspeed = GameManager.instance.Frogspeed - SpeedDecreaseValue;
+                GameManager.instance.frogSpawnFrequency = GameManager.instance.frogSpawnFrequency + 0.25f;
                 break;
                 case 7:
                 GameManager.frogShield = true;
@@ -228,8 +227,8 @@ public class Buff : ScriptableObject
         switch (uniqueId)
         {
             case 0:
-                GameManager.instance.Frogspeed -= SpeedBoostValue;
-                GameManager.instance.frogSpawnFrequency += 0.25f;
+                GameManager.instance.Frogspeed = GameManager.instance.Frogspeed-SpeedBoostValue;
+                GameManager.instance.frogSpawnFrequency = GameManager.instance.frogSpawnFrequency + 0.25f;
 
                 break;
             case 1:
@@ -250,8 +249,8 @@ public class Buff : ScriptableObject
             case 5:
                 break;
             case 6:
-                GameManager.instance.Frogspeed += SpeedDecreaseValue;
-                GameManager.instance.frogSpawnFrequency -= 0.25f;
+                GameManager.instance.Frogspeed = GameManager.instance.Frogspeed + SpeedDecreaseValue;
+                GameManager.instance.frogSpawnFrequency = GameManager.instance.frogSpawnFrequency- 0.25f;
                 break;
             case 7:
                 GameManager.frogShield = false;
