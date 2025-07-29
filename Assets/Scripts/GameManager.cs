@@ -377,6 +377,24 @@ public class GameManager : MonoBehaviour
 
         if (_gameState == GameState.Start)
         {
+            foreach (var frog in frogs)
+            {
+                frog.isActive = false;
+                frog.isAnimating = false;
+                frog.rectTransform.anchoredPosition = new UnityEngine.Vector3(0, frog.rectTransform.anchoredPosition.y, 1);
+                frog.frogScript.transform.DOKill();
+                frog.frogScript.image.DOKill();
+                frog.frogScript.maxTouches = 1;
+
+                // frog.LillypadSequence.Restart();
+                // frog.LillypadSequence.Pause();
+                frog.sequence.Restart();
+                frog.sequence.Pause();
+
+                frog.frogScript.Reset();
+                frog.frogScript.ChangeToNormalFrog();
+            }
+            UIManager.instance.UnloadScorePage();
             score = 0;
             // Reset cancellation token for new game iteration
             ResetCancellationToken();
@@ -527,6 +545,7 @@ public class GameManager : MonoBehaviour
     {
         // 1. Cancel all async tasks like ActivateFrog and StartTimer
         destroyCancellationTokenGM?.Cancel();
+   
         _gameTime = 0;
 
         // 2. Wait for the end of the frame. This is crucial to let the cancellation propagate
@@ -560,8 +579,9 @@ public class GameManager : MonoBehaviour
                 case 0:
                     if (score > GameLoopManager.progress.Highscore30)
                     {
-                        UIManager.isHighScore = true;
+
                         GameLoopManager.progress.Highscore30 = score;
+                        UIManager.isHighScore = true;
                     }
                     break;
                 case 1:
@@ -587,8 +607,10 @@ public class GameManager : MonoBehaviour
                     break;
             }
             
-            GameLoopManager.progress._score = score;
-            ProgressManager.SaveGameProgress("savedProgress", GameLoopManager.progress);
+         
+                GameLoopManager.progress._score = score;
+                ProgressManager.SaveGameProgress("savedProgress", GameLoopManager.progress);
+            
         }
 
         // 5. Wait a short moment before clearing buffs, as you requested.
@@ -612,6 +634,8 @@ public class GameManager : MonoBehaviour
         score = 0;
         Score.text = score.ToString();
         if (paused) { BuffManager.instance.buffsUsed.Clear(); }
+
+
         paused = false;
     }
 }

@@ -3811,7 +3811,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 341350658}
   m_OnClick:
     m_PersistentCalls:
@@ -5179,7 +5179,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &481059628
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9949,7 +9949,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &824059164
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10145,7 +10145,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 824620139}
   m_OnClick:
     m_PersistentCalls:
@@ -10614,6 +10614,18 @@ MonoBehaviour:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 5
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1336968307}
+        m_TargetAssemblyTypeName: UnityEngine.Behaviour, UnityEngine
+        m_MethodName: set_enabled
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -11115,7 +11127,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &929624182
 RectTransform:
   m_ObjectHideFlags: 0
@@ -15483,7 +15495,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Fors\xE4tt"
+  m_text: "Forts\xE4tt"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c958178e990424e46ae5a5581748783b, type: 2}
   m_sharedMaterial: {fileID: -6771993221711144451, guid: c958178e990424e46ae5a5581748783b, type: 2}
@@ -16749,7 +16761,7 @@ MonoBehaviour:
   transparentSprite: {fileID: -6978546497571662896, guid: d701b9ee28317d44ea8bc37f4897568a, type: 3}
   _pauseButton: {fileID: 1893656656}
   _pauseButtonImage: {fileID: 1893656659}
-  BlurPanel: {fileID: 0}
+  BlurPanel: {fileID: 1601751784}
   Timer: {fileID: 1102682651}
   FrogCounter: {fileID: 1243641565}
   _timer: {fileID: 1768540914}
@@ -16800,7 +16812,6 @@ MonoBehaviour:
   highscore: {fileID: 1259270165}
   tidsgrans: {fileID: 12837226}
   sekunder: {fileID: 1565842842}
-  timelimitValue: {fileID: 0}
   seagrass: {fileID: 2027724}
   seagrass2: {fileID: 956143152}
   _GameTime: {fileID: 1493377369}
@@ -16809,6 +16820,10 @@ MonoBehaviour:
   _audio: {fileID: 1920668920}
   increase: {fileID: 341350658}
   decrease: {fileID: 824620139}
+  increaseButton: {fileID: 341350660}
+  decreaseButton: {fileID: 824620141}
+  exit1Button: {fileID: 837037573}
+  exit2Button: {fileID: 2133694452}
   fishh: {fileID: 114479265}
   sharkk: {fileID: 486581847}
   Timer: {fileID: 1102682651}
@@ -16823,6 +16838,8 @@ MonoBehaviour:
   settings: {fileID: 1319561800}
   pauseText1: {fileID: 309065168}
   pauseText2: {fileID: 923109582}
+  pauseTextmusic: {fileID: 1323048423}
+  pauseTextsound: {fileID: 1164133440}
   pauseGameObject: {fileID: 146730628}
   touchBlocker: {fileID: 1128088298}
   bubbleSpawner: {fileID: 481059631}

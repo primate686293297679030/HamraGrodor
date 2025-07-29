@@ -53,7 +53,7 @@ public class LoadMenuOptions : MonoBehaviour
     [SerializeField] private TextMeshProUGUI highscore;
     [SerializeField] private TextMeshProUGUI tidsgrans;
     [SerializeField] private TextMeshProUGUI sekunder;
-    [SerializeField] private TextMeshProUGUI timelimitValue;
+
     [SerializeField] private Image seagrass;
     [SerializeField] private Image seagrass2;
     [SerializeField] private Image _GameTime;
@@ -64,6 +64,11 @@ public class LoadMenuOptions : MonoBehaviour
 
     [SerializeField] private Image increase;
     [SerializeField] private Image decrease ;
+
+    [SerializeField] private Button increaseButton;
+    [SerializeField] private Button decreaseButton;
+    [SerializeField] private Button exit1Button;
+    [SerializeField] private Button exit2Button;
 
     [SerializeField] SpriteRenderer fishh;
     [SerializeField] SpriteRenderer sharkk;
@@ -85,7 +90,8 @@ public class LoadMenuOptions : MonoBehaviour
     List<Image> pausePageImages=new List<Image>();
     public TextMeshProUGUI pauseText1;
     public TextMeshProUGUI pauseText2;
-
+    public TextMeshProUGUI pauseTextmusic;
+    public TextMeshProUGUI pauseTextsound;
     public GameObject pauseGameObject;
     Image pauseBGimage;
     public GameObject touchBlocker;
@@ -97,6 +103,18 @@ public class LoadMenuOptions : MonoBehaviour
     {
         //countdownText.DOFade(0, 1).SetEase(Ease.InSine);
     }
+    void Update()
+    {
+        buttonsStatus();
+
+    }
+
+    private void buttonsStatus()
+    {
+
+        
+    }
+
     private void Start()
     {
         if (pauseGameObject.TryGetComponent<Image>(out Image imgbg))
@@ -123,7 +141,7 @@ public class LoadMenuOptions : MonoBehaviour
         score.DOFade(0, 0);
         highscore.DOFade(0, 0);
         tidsgrans.DOFade(0, 0);
-        timelimitValue.DOFade(0, 0);
+       
         sekunder.DOFade(0, 0);
         seagrass.DOFade(0, 0);
         seagrass2.DOFade(0, 0);
@@ -367,7 +385,7 @@ public class LoadMenuOptions : MonoBehaviour
          score.DOFade(1,time);
          highscore.DOFade(1, time);
          tidsgrans.DOFade(1, time);
-         timelimitValue.DOFade(1, time);
+
          sekunder.DOFade(1, time);
          seagrass.DOFade(1, time);
          seagrass2.DOFade(1, time);
@@ -379,6 +397,8 @@ public class LoadMenuOptions : MonoBehaviour
         _GameTimeShadow.DOFade(1, time);
         sharkk.DOFade(1, time);
          fishh.DOFade(1, time);
+        increaseButton.interactable = true;
+        decreaseButton.interactable = true; 
 
     }
     public void hideSettingsMenu()
@@ -395,15 +415,18 @@ public class LoadMenuOptions : MonoBehaviour
        score.DOFade(0, time).SetEase(Ease.InOutSine); 
        highscore.DOFade(0, time).SetEase(Ease.InOutSine); 
        tidsgrans.DOFade(0, time).SetEase(Ease.InOutSine); 
-       timelimitValue.DOFade(0,time).SetEase(Ease.InOutSine); 
+
        sekunder.DOFade(0, time).SetEase(Ease.InOutSine); 
        seagrass.DOFade(0, time).SetEase(Ease.InOutSine); 
        seagrass2.DOFade(0, time).SetEase(Ease.InOutSine); 
        music.DOFade(0, time).SetEase(Ease.InOutSine); 
        _audio.DOFade(0, time).SetEase(Ease.InOutSine);      
        increase.DOFade(0, time).SetEase(Ease.InOutSine); 
-       decrease.DOFade(0, time).SetEase(Ease.InOutSine); 
-       _GameTime.DOFade(0, time).SetEase(Ease.InOutSine); 
+       decrease.DOFade(0, time).SetEase(Ease.InOutSine);
+        increaseButton.interactable = false;
+        decreaseButton.interactable = false;
+        
+        _GameTime.DOFade(0, time).SetEase(Ease.InOutSine); 
        _GameTimeShadow.DOFade(0, time).SetEase(Ease.InOutSine); 
        sharkk.DOFade(0, time).SetEase(Ease.InOutSine); 
        fishh.DOFade(0, time).SetEase(Ease.InOutSine); 
@@ -435,11 +458,11 @@ public class LoadMenuOptions : MonoBehaviour
 
 
 
-            await Task.Delay(750);
+            await Task.Delay(500);
 
 
-            Camera.main.transform.DOMove(rectTransformMenu.transform.position, 2f).SetEase(Ease.InOutSine);
-                    Camera.main.DOOrthoSize(70f, 2f).SetEase(Ease.InSine).OnComplete(() =>
+            Camera.main.transform.DOMove(rectTransformMenu.transform.position, 1.5f).SetEase(Ease.InOutSine);
+                    Camera.main.DOOrthoSize(70f, 1.5f).SetEase(Ease.InSine).OnComplete(() =>
                     {
                         play.enabled = true;
                         about.enabled = true;
@@ -449,7 +472,7 @@ public class LoadMenuOptions : MonoBehaviour
                     });
                
 
-            await Task.Delay(1750);
+           await Task.Delay(1250);
             FadeInMenuSettings();
 
 
@@ -493,8 +516,9 @@ public class LoadMenuOptions : MonoBehaviour
         }
         else if (index==3)
         {
-             UIManager.instance.UnloadScorePage();
-          await  Awaitable.WaitForSecondsAsync(1f);
+
+            UIManager.instance.UnloadScorePage();
+            await Awaitable.WaitForSecondsAsync(1f);
             onGameBoardBackButton();
         }
         else if(index ==4)
@@ -505,7 +529,8 @@ public class LoadMenuOptions : MonoBehaviour
                 touchBlocker.SetActive(true);
                 isPaused = true;
                 GameManager.paused = true;
-           
+                exit1Button.interactable = true;
+                exit2Button.interactable = true;
                 pauseGameObject.SetActive(true);
                 for (int i = 0; i < pausePageImages.Count; i++)
                 {
@@ -516,6 +541,8 @@ public class LoadMenuOptions : MonoBehaviour
                 }
                 pauseText1.DOFade(1, 0.1f);
                 pauseText2.DOFade(1, 0.1f);
+                pauseTextsound.DOFade(1, 0.1f);
+                pauseTextmusic.DOFade(1, 0.1f);
                 GameManager.instance.fadePanel.gameObject.SetActive(true);
                 GameManager.instance.fadePanel.DOFade(0.4f, 0.1f);
                 pauseBGimage.DOFade(1f, 0.1f).OnComplete(() =>
@@ -526,12 +553,15 @@ public class LoadMenuOptions : MonoBehaviour
             }
             else if(isPaused)
             {
+                exit1Button.interactable = false;
+                exit2Button.interactable = false;
+                pauseGameObject.SetActive(false);
                 Time.timeScale = 1;
                 touchBlocker.SetActive(false);
                 isPaused = false;
                 GameManager.paused = false;
 
-                pauseGameObject.SetActive(false);
+                
                 for (int i = 0; i < pausePageImages.Count; i++)
                 {
 
@@ -541,6 +571,8 @@ public class LoadMenuOptions : MonoBehaviour
                 }
                 pauseText1.DOFade(0, 0.1f);
                 pauseText2.DOFade(0, 0.1f);
+                pauseTextsound.DOFade(0, 0.1f);
+                pauseTextmusic.DOFade(0, 0.1f);
                 GameManager.instance.fadePanel.DOFade(0, 0.1f);
                 GameManager.instance.fadePanel.gameObject.SetActive(false);
 
@@ -552,7 +584,11 @@ public class LoadMenuOptions : MonoBehaviour
         else if(index ==5)
 
         {
+            exit1Button.interactable = false;
+            exit2Button.interactable = false;
+            GameManager.instance.resetPause();
             Time.timeScale = 1;
+
             touchBlocker.SetActive(false);
             GameManager.paused = true;
             isPaused = false;
@@ -566,10 +602,13 @@ public class LoadMenuOptions : MonoBehaviour
             }
             pauseText1.DOFade(0, 0.5f);
             pauseText2.DOFade(0, 0.5f);
+            pauseTextsound.DOFade(0, 0.5f);
+            pauseTextmusic.DOFade(0, 0.5f);
 
             _pauseButton.DOFade(0, 0.5f).SetEase(Ease.InSine);
             pauseBGimage.DOFade(0f, 0.5f);
-            GameManager.instance.resetPause();
+           
+            UIManager.instance.UnloadScorePage();
             GameManager.instance.fadePanel.DOFade(0.4f, 0.5f).OnComplete(() =>
             {
                 

@@ -124,8 +124,8 @@ public class UIManager : MonoBehaviour
 
         if(_gameState == GameState.Highscore)
         {
-          //  BlurPanel.gameObject.SetActive(true);
-            //BlurPanel.DOFade(0.43f, 1).SetEase(Ease.InOutSine);
+           BlurPanel.gameObject.SetActive(true);
+            BlurPanel.DOFade(0.43f, 1).SetEase(Ease.InOutSine);
 
  
 
@@ -210,11 +210,11 @@ public class UIManager : MonoBehaviour
     }
     public void UnloadScorePage()
     {
-        BlurPanel.DOFade(0, 1).SetEase(Ease.InOutSine).OnComplete(() =>
-        {
-            BlurPanel.gameObject.SetActive(false);
-        });
-     
+      // BlurPanel.DOFade(0, 1).SetEase(Ease.InOutSine).OnComplete(() =>
+      // {
+      //     BlurPanel.gameObject.SetActive(false);
+      // });
+      
         isHighScore = false;
        // scorePage.transform.DOScale(new Vector3(0.0f, 0.0f, 1), 1).SetEase(Ease.OutFlash);
 
